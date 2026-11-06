@@ -7,6 +7,7 @@ data = open(os.path.join(here, "data.js")).read()
 # the artifact viewer adds its own document skeleton
 html = html[html.index("<title>"):]
 html = html.replace("</head>\n<body>\n", "").replace("</body>\n</html>\n", "")
+html = re.sub(r'<script src="data\.js(\?v=\w+)?"></script>', lambda m: '<script src="data.js"></script>', html)
 html = html.replace('<script src="data.js"></script>',
                     "<script>\n" + data + "\n</script>")
 open(sys.argv[1], "w").write(html)

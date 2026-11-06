@@ -825,6 +825,7 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
     <div class="set-group">
       <div class="set-row"><span class="set-name">Repeat each phrase</span><div class="seg" id="segRepeat" role="radiogroup" aria-label="Repeat each phrase"></div></div>
       <div class="set-row set-switch"><span class="set-name">Repeat after me<small>A silence after each phrase, to say it back</small></span><button class="switch" id="swEcho" type="button" role="switch" aria-checked="false" aria-label="Repeat after me"></button></div>
+      <div class="set-row set-switch"><span class="set-name">Contractions<small>On: I'm, don't. Off: I am, do not</small></span><button class="switch" id="swContract" type="button" role="switch" aria-checked="true" aria-label="Contractions"></button></div>
       <div class="set-row set-switch"><span class="set-name">Hide text<small>Listen only; tap a card to see it</small></span><button class="switch" id="swHide" type="button" role="switch" aria-checked="false" aria-label="Hide text"></button></div>
     </div>
   </div>
@@ -866,7 +867,7 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
   </div>
 </div>
 
-<script src="data.js"></script>
+<script src="data.js?v=2f57a64b"></script>
 <script>
 (() => {
   const S = window.SECTIONS || [];
@@ -877,6 +878,12 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
     set(k, v) { try { localStorage.setItem("ee_" + k, JSON.stringify(v)) } catch (e) {} }
   };
   const opts = { repeat: store.get("repeat", "1"), echo: store.get("echo", false), voice: store.get("voice", ""), es: false, practice: store.get("practice", false), pron: store.get("pron", true), speed: store.get("speed", "0.85") };
+  // Contractions on: every phrase as people say it (I'm, don't). Off: every phrase in full (I am, do not).
+  // it.k stays the same in both, so stars and progress do not depend on the setting.
+  opts.contract = store.get("contract", true);
+  S.forEach(sec => sec.topics.forEach(t => t.items.forEach(it => { it.k = it.en; it.c = it.en })));
+  function applyContract() { S.forEach(sec => sec.topics.forEach(t => t.items.forEach(it => { if (it.c !== undefined) it.en = opts.contract || !it.f ? it.c : it.f }))) }
+  applyContract();
   let stack = [];  // navigation history: [{v:'home'}, {v:'section', s}, {v:'topic', s, t}]
   const tts = "speechSynthesis" in window;
 
@@ -1618,7 +1625,7 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
       <div class="actions">
         ${tts ? `<button class="act play" type="button" data-say="${i}">▶ Listen</button>` : ""}
         <button class="act" type="button" data-rec="${i}">${MIC} Record</button>
-        <button class="act fav" type="button" data-fav="${i}" aria-pressed="${!!favs[it.en]}" aria-label="Keep this phrase" title="Keep this phrase">${STAR(!!favs[it.en])}</button>
+        <button class="act fav" type="button" data-fav="${i}" aria-pressed="${!!favs[it.k || it.en]}" aria-label="Keep this phrase" title="Keep this phrase">${STAR(!!favs[it.k || it.en])}</button>
       </div>
       <div class="rec-row" id="rec${i}">${recRow(it, i)}</div>
     </article>`;
@@ -1626,7 +1633,7 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
   // My phrases: the starred ones, kept on this device.
   let favs = store.get("favs", {});
   const allItems = new Map();
-  S.forEach(s => s.topics.forEach(t => t.items.forEach(it => { if (!allItems.has(it.en)) allItems.set(it.en, it) })));
+  S.forEach(s => s.topics.forEach(t => t.items.forEach(it => { if (!allItems.has(it.k)) allItems.set(it.k, it) })));
   const favTopic = { id: "favs", title: "My phrases", tip: "The phrases you starred. Practice them until they feel easy.", items: Object.keys(favs).map(en => allItems.get(en)).filter(Boolean) };
   S.unshift({ id: "mine", group: "mine", unit: "phrases", tag: "Train", title: "My phrases", sub: "The phrases you starred", topics: [favTopic] });
 
@@ -1710,8 +1717,8 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
       else startRecording(it, i, document.getElementById("rec" + i));
     });
     view.querySelectorAll("[data-fav]").forEach(b => b.onclick = () => {
-      const it = t.items[+b.dataset.fav], on = !favs[it.en];
-      if (on) { favs[it.en] = 1; favTopic.items.push(it) } else { delete favs[it.en]; favTopic.items = favTopic.items.filter(x => x.en !== it.en) }
+      const it = t.items[+b.dataset.fav], key = it.k || it.en, on = !favs[key];
+      if (on) { favs[key] = 1; favTopic.items.push(it) } else { delete favs[key]; favTopic.items = favTopic.items.filter(x => (x.k || x.en) !== key) }
       store.set("favs", favs); paintFavCount(true);
       b.setAttribute("aria-pressed", String(on)); b.innerHTML = STAR(on);
     });
@@ -1934,7 +1941,7 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
   const repLabel = v => v === "inf" ? "∞" : v + "×";
   function setSummary() {
     return [`${(SPEEDS.find(x => x[0] === opts.speed) || SPEEDS[1])[1]} speed`, `Repeat ${repLabel(opts.repeat)}`,
-      opts.echo ? "Repeat after me" : "", opts.practice ? "Text hidden" : ""].filter(Boolean).join(" · ");
+      opts.echo ? "Repeat after me" : "", opts.practice ? "Text hidden" : "", opts.contract ? "" : "No contractions"].filter(Boolean).join(" · ");
   }
   const settingsBack = document.getElementById("settingsBack");
   function paintSettings() {
@@ -1944,13 +1951,14 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
     seg("segRepeat", REPEATS, opts.repeat, repLabel);
     document.getElementById("swEcho").setAttribute("aria-checked", String(!!opts.echo));
     document.getElementById("swHide").setAttribute("aria-checked", String(!!opts.practice));
+    document.getElementById("swContract").setAttribute("aria-checked", String(!!opts.contract));
     const k = Math.max(0, SPEEDS.findIndex(x => x[0] === opts.speed)), sb = document.getElementById("spdBtn");
     sb.innerHTML = SPEED_ICONS[k] + `<span>${SPEEDS[k][1]}</span>`;
     sb.className = "spd-btn spd-" + SPEEDS[k][1].toLowerCase();
     sb.dataset.tip = `Speed: ${SPEEDS[k][1]} · click to change`; sb.setAttribute("aria-label", `Speed: ${SPEEDS[k][1]}. Change speed`);
     const g = document.getElementById("optsBtn");
     document.getElementById("gearRep").textContent = opts.repeat === "1" ? "" : repLabel(opts.repeat);
-    g.classList.toggle("has-dot", !!(opts.echo || opts.practice));
+    g.classList.toggle("has-dot", !!(opts.echo || opts.practice || !opts.contract));
     g.setAttribute("aria-label", "Settings: " + setSummary());
   }
   function openSettings() { settingsBack.hidden = false; paintSettings(); document.getElementById("settingsBox").focus({ preventScroll: true }) }
@@ -1963,6 +1971,7 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
   document.getElementById("segSpeed").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; opts.speed = b.dataset.v; store.set("speed", opts.speed); paintSettings() };
   document.getElementById("segRepeat").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; opts.repeat = b.dataset.v; store.set("repeat", opts.repeat); if (reading) reading.total = repeats(); paintSettings() };
   document.getElementById("swEcho").onclick = () => { opts.echo = !opts.echo; store.set("echo", opts.echo); paintSettings() };
+  document.getElementById("swContract").onclick = () => { stopReading(); opts.contract = !opts.contract; store.set("contract", opts.contract); applyContract(); renderKeepPlace(); paintSettings() };
   document.getElementById("swHide").onclick = () => { opts.practice = !opts.practice; store.set("practice", opts.practice); renderKeepPlace(); paintSettings() };
   if (!SPEEDS.some(x => x[0] === opts.speed)) opts.speed = "0.85";
   // Speed in the player: each click goes slow (turtle) → normal (rabbit) → fast (running rabbit); the new speed starts with the next phrase.
