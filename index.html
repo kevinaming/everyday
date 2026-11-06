@@ -1,13 +1,11 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Everyday English</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
 <style>
 /* Layout: a sticky navigation bar, then one view at a time (home → section → topic), big touch targets for a tablet. */
 :root {
@@ -404,6 +402,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .sec-h[aria-expanded="true"] { color: var(--green) }
 .sec-h[aria-expanded="true"] .chev { transform: translateY(2px) rotate(225deg) }
 .sec-h + .tlist { margin-bottom: 12px }
+#sheetList { margin-top: 14px }  /* room between the search box and the first line */
 .qbtn { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 0; padding-block: 0; margin-block: 7px; border-radius: 4px }
 .ok { color: var(--green); font-weight: 900 }
 .card > .tag { justify-self: start }
@@ -529,6 +528,160 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
 /* Home: a green square with a house, next to Back */
 .navbtn.home-go { display: inline-grid; place-items: center; width: 40px; padding: 0; background: var(--green); color: var(--on-green); border-color: var(--green); box-shadow: 0 2px 0 var(--green-d) }
 .navbtn.home-go:hover { background: #A5E04A; border-color: #A5E04A }
+
+/* ===================================================================
+   GLASS: the macOS look. A soft color field behind translucent, blurred
+   panels with a thin light edge; system font; blue as the one accent.
+   Dark by default; Light under Auto on a light device, or when chosen.
+   =================================================================== */
+:root, :root[data-theme="dark"] {
+  --bg: #07090F;
+  --mesh: radial-gradient(70vw 55vh at 8% -8%, rgba(94, 92, 230, .55), transparent 62%),
+          radial-gradient(60vw 50vh at 100% 6%, rgba(10, 132, 255, .42), transparent 60%),
+          radial-gradient(70vw 60vh at 55% 112%, rgba(191, 90, 242, .32), transparent 62%),
+          linear-gradient(180deg, #0B0E1A 0%, #06070C 100%);
+  --glass: rgba(255, 255, 255, .065); --glass-strong: rgba(24, 26, 38, .58); --glass-hi: rgba(255, 255, 255, .11);
+  --stroke: rgba(255, 255, 255, .14); --stroke-soft: rgba(255, 255, 255, .08); --hover: rgba(255, 255, 255, .12);
+  --ink: #F5F7FA; --muted: rgba(235, 238, 245, .62);
+  --accent: #0A84FF; --accent-hi: #4DA3FF; --accent-2: #5E5CE6; --on-accent: #FFFFFF; --tint: rgba(10, 132, 255, .2);
+  --ok: #30D158; --danger: #FF453A; --gold: #FFD60A;
+  --spec: inset 0 1px 0 rgba(255, 255, 255, .16); --shadow: 0 12px 34px rgba(0, 0, 0, .38);
+  --surface: var(--glass); --line: var(--stroke); --chip: var(--glass-hi); --es: var(--muted);
+  --green: var(--accent); --green-d: transparent; --on-green: var(--on-accent);
+  --blue: #64D2FF; --blue-d: var(--accent); --red: var(--accent); --navy: var(--accent); --danger-d: transparent;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #EEF1F8;
+    --mesh: radial-gradient(70vw 55vh at 8% -8%, rgba(94, 92, 230, .26), transparent 62%),
+            radial-gradient(60vw 50vh at 100% 6%, rgba(10, 132, 255, .22), transparent 60%),
+            radial-gradient(70vw 60vh at 55% 112%, rgba(255, 159, 10, .16), transparent 62%),
+            linear-gradient(180deg, #F6F8FC 0%, #E8ECF5 100%);
+    --glass: rgba(255, 255, 255, .58); --glass-strong: rgba(255, 255, 255, .72); --glass-hi: rgba(255, 255, 255, .86);
+    --stroke: rgba(255, 255, 255, .8); --stroke-soft: rgba(20, 30, 60, .08); --hover: rgba(20, 30, 60, .07);
+    --ink: #1D1D1F; --muted: rgba(60, 60, 67, .68);
+    --accent: #007AFF; --accent-hi: #3395FF; --tint: rgba(0, 122, 255, .12); --blue: #0071E3;
+    --ok: #34C759; --danger: #FF3B30; --gold: #E6A100;
+    --spec: inset 0 1px 0 rgba(255, 255, 255, .95); --shadow: 0 12px 34px rgba(30, 40, 80, .12);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #EEF1F8;
+  --mesh: radial-gradient(70vw 55vh at 8% -8%, rgba(94, 92, 230, .26), transparent 62%),
+          radial-gradient(60vw 50vh at 100% 6%, rgba(10, 132, 255, .22), transparent 60%),
+          radial-gradient(70vw 60vh at 55% 112%, rgba(255, 159, 10, .16), transparent 62%),
+          linear-gradient(180deg, #F6F8FC 0%, #E8ECF5 100%);
+  --glass: rgba(255, 255, 255, .58); --glass-strong: rgba(255, 255, 255, .72); --glass-hi: rgba(255, 255, 255, .86);
+  --stroke: rgba(255, 255, 255, .8); --stroke-soft: rgba(20, 30, 60, .08); --hover: rgba(20, 30, 60, .07);
+  --ink: #1D1D1F; --muted: rgba(60, 60, 67, .68);
+  --accent: #007AFF; --accent-hi: #3395FF; --tint: rgba(0, 122, 255, .12); --blue: #0071E3;
+  --ok: #34C759; --danger: #FF3B30; --gold: #E6A100;
+  --spec: inset 0 1px 0 rgba(255, 255, 255, .95); --shadow: 0 12px 34px rgba(30, 40, 80, .12);
+  color-scheme: light;
+}
+
+html body { background: var(--mesh), var(--bg); background-attachment: fixed; color: var(--ink); font-family: var(--body); font-weight: 500; letter-spacing: -.005em; -webkit-font-smoothing: antialiased }
+html body::before { background: transparent }
+html h1, html .tile .t, html .sheet-head h2, html .settings-head h2 { font-family: var(--display); font-weight: 700; letter-spacing: -.02em }
+html .eyebrow, html .settings h3, html .stage-title { color: var(--accent); font-weight: 700; letter-spacing: .08em }
+html .lead, html .tip, html .how { color: var(--muted) }
+::selection { background: var(--tint) }
+
+/* glass surfaces */
+html .bar { background: var(--glass-strong); border-bottom: 1px solid var(--stroke-soft); -webkit-backdrop-filter: blur(30px) saturate(180%); backdrop-filter: blur(30px) saturate(180%); color: var(--ink) }
+html .card, html .tile, html .progress-card, html .t-info.topic-head {
+  background: var(--glass); border: 1px solid var(--stroke); border-radius: 22px; box-shadow: var(--spec), var(--shadow);
+  -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%) }
+html .t-info.topic-head { border-radius: 0 0 18px 18px; border-top: 0; box-shadow: var(--shadow) }
+html .tile { transition: transform .2s ease, background .2s, box-shadow .2s }
+html .tile:hover:not(:disabled) { transform: translateY(-2px); background: var(--glass-hi); box-shadow: var(--spec), 0 16px 40px rgba(0,0,0,.28) }
+html .tile .s, html .tile .n { color: var(--muted) }
+html .tag { background: var(--tint); color: var(--accent); border-radius: 999px; font-weight: 700; letter-spacing: .06em }
+html .pbar { background: var(--glass-hi); border-radius: 999px; overflow: hidden }
+html .pbar i { background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 999px }
+
+/* buttons: soft pills; the main ones in blue */
+html .act, html .toggle, html .close, html .tbtn, html .hit, html .drop-head, html .chip {
+  background: var(--glass-hi); color: var(--ink); border: 1px solid var(--stroke); border-radius: 999px; box-shadow: var(--spec);
+  text-transform: none; letter-spacing: 0; font-weight: 600; transition: background .15s, transform .1s }
+html .act:hover, html .toggle:hover, html .close:hover, html .tbtn:hover, html .hit:hover, html .drop-head:hover { background: var(--hover) }
+html .act:active, html .toggle:active, html .tbtn:active { transform: scale(.97); box-shadow: none }
+html .act.play, html .next .act.play {
+  background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: var(--on-accent); border-color: transparent;
+  box-shadow: 0 6px 18px rgba(10, 132, 255, .35), inset 0 1px 0 rgba(255, 255, 255, .35) }
+html .act.play:hover { filter: brightness(1.07); background: linear-gradient(180deg, var(--accent-hi), var(--accent)) }
+html .act.stopping, html .sel-say button.stopping { background: linear-gradient(180deg, #FF6961, var(--danger)); color: #fff; border-color: transparent; box-shadow: 0 6px 18px rgba(255, 69, 58, .3) }
+html .act.fav { color: var(--muted) }
+html .act.fav[aria-pressed="true"] { color: var(--gold) }
+html .card .act:not(.play):not(.stopping):not(.fav) { color: var(--accent) }
+
+/* the phrase being read */
+html .card.reading { border-color: rgba(10, 132, 255, .7); box-shadow: 0 0 0 1px rgba(10, 132, 255, .55), 0 14px 40px rgba(10, 132, 255, .25), var(--spec) }
+html .card.heard { opacity: .55 }
+html .en.karaoke .w { color: var(--muted) }
+html .en.karaoke .w.said { color: var(--ink) }
+html .en.karaoke .w.cur { color: var(--accent) }
+html .card.flash { animation: glassflash 1.6s ease-out }
+@keyframes glassflash { 0%, 40% { box-shadow: 0 0 0 3px var(--tint), var(--shadow) } 100% { box-shadow: var(--spec), var(--shadow) } }
+
+/* bar buttons */
+html .cap { background: var(--glass); border: 1px solid var(--stroke-soft); box-shadow: var(--spec); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px) }
+html .yt { color: var(--ink) }
+html .yt:hover { background: var(--hover) }
+html .yt.fav-go { color: var(--gold) }
+html .gear-rep { color: var(--accent) }
+html .optsBtn.has-dot::before { background: var(--accent) }
+html .fab { display: none !important }  /* Topics is in the bar now */
+html .crumb { font-weight: 650; opacity: 1 }
+
+/* player: a floating glass pill */
+html .reader-bar { background: var(--glass-strong); border: 1px solid var(--stroke); border-radius: 30px; box-shadow: var(--spec), 0 18px 50px rgba(0, 0, 0, .4);
+  -webkit-backdrop-filter: blur(34px) saturate(180%); backdrop-filter: blur(34px) saturate(180%) }
+html .reader-bar button { color: var(--ink) }
+html .reader-bar button:hover { background: var(--hover) }
+html .reader-bar #readerPlay { background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: #fff; box-shadow: 0 6px 18px rgba(10, 132, 255, .4), inset 0 1px 0 rgba(255,255,255,.35) }
+html .reader-bar #readerStop { background: transparent; color: var(--danger) }
+html .reader-bar .rb-count { color: var(--ink); text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 14px }
+html .rb-track button::after { background: var(--stroke-soft); background: color-mix(in srgb, var(--ink) 18%, transparent) }
+html .rb-track button.done::after { background: var(--accent) }
+html .rb-track button i { background: var(--accent) }
+html .spd-name { color: var(--accent) }
+html .spd input { accent-color: var(--accent) }
+
+/* topics menu */
+html .sheet { background: rgba(0, 0, 0, .25) }
+html .sheet-body, html body.docked .sheet-body { background: var(--glass-strong); border-left: 1px solid var(--stroke-soft); -webkit-backdrop-filter: blur(34px) saturate(180%); backdrop-filter: blur(34px) saturate(180%) }
+html .sec-h { border-top: 1px solid var(--stroke-soft); color: var(--ink) }
+html .sec-h[aria-expanded="true"] { color: var(--accent) }
+html .tbtn[aria-current="true"] { background: var(--tint); color: var(--accent); border-color: rgba(10, 132, 255, .5) }
+html .qbtn:hover { background: var(--hover) }
+html .qbtn.now { background: var(--tint); color: var(--accent) }
+html .search { background: var(--glass-hi); border: 1px solid var(--stroke); border-radius: 14px; color: var(--ink); box-shadow: var(--spec) }
+html .hit mark { background: rgba(255, 214, 10, .45); color: inherit }
+
+/* settings */
+html .settings-back { background: rgba(0, 0, 0, .28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px) }
+html .settings { background: var(--glass-strong); border: 1px solid var(--stroke); border-radius: 26px; box-shadow: var(--spec), 0 24px 60px rgba(0, 0, 0, .35);
+  -webkit-backdrop-filter: blur(40px) saturate(180%); backdrop-filter: blur(40px) saturate(180%) }
+html .seg { border: 1px solid var(--stroke); background: var(--glass); border-radius: 12px; padding: 2px; gap: 2px }
+html .seg button { border: 0 !important; border-radius: 9px; font-weight: 600 }
+html .seg button:hover { background: var(--hover) }
+html .seg button[aria-checked="true"] { background: var(--glass-hi); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.25), var(--spec) }
+html .switch { background: var(--hover); border: 0 }
+html .switch::after { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3) }
+html .switch[aria-checked="true"] { background: var(--ok) }
+html .switch[aria-checked="true"]::after { background: #fff }
+html .drop-list { background: var(--glass-strong); border: 1px solid var(--stroke); border-radius: 14px; box-shadow: var(--shadow); -webkit-backdrop-filter: blur(30px); backdrop-filter: blur(30px) }
+
+/* full screen and the labels */
+html .stage { background: var(--mesh), var(--bg) }
+@media (hover: hover) { html [data-tip]:hover::after { background: var(--glass-strong); color: var(--ink); border: 1px solid var(--stroke); border-radius: 8px; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px) } }
+html button:focus-visible, html select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+@media (prefers-reduced-motion: reduce) { html .tile, html .act { transition: none } html .tile:hover:not(:disabled) { transform: none } }
 </style>
 </head>
 <body>
@@ -541,6 +694,7 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
     <div class="crumb" id="crumb">Everyday English</div>
     <button class="yt info-btn" id="infoBtn" type="button" aria-expanded="false" aria-controls="tInfo" aria-label="About this topic" data-tip="About this topic" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
     <div class="cap">
+    <button class="yt" id="topicsGo" type="button" aria-label="Topics" data-tip="Topics" data-tip-end><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></button>
     <button class="yt yt-wide fav-go" id="favGo" type="button" aria-label="My phrases" data-tip="My phrases" data-tip-end><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="favCount">0</span></button>
     <button class="yt yt-wide optsBtn" id="optsBtn" type="button" aria-haspopup="dialog" aria-label="Settings" data-tip="Settings" data-tip-end><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span class="gear-rep" id="gearRep"></span></button>
     </div>
@@ -551,6 +705,8 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
 <div class="settings-back" id="settingsBack" hidden>
   <div class="settings" role="dialog" aria-modal="true" aria-labelledby="setTitle">
     <div class="settings-head"><h2 id="setTitle">Settings</h2><button class="close" id="settingsDone" type="button">Done</button></div>
+    <h3>Appearance</h3>
+    <div class="set-row"><span class="set-name">Theme<small>Auto follows your device.</small></span><div class="seg" id="segTheme" role="radiogroup" aria-label="Theme"></div></div>
     <h3>Voice</h3>
     <div class="set-row set-wide"><select class="speed" id="voicePick" aria-label="Voice" hidden></select></div>
     <div class="set-row"><span class="set-name">Speed</span><div class="seg" id="segSpeed" role="radiogroup" aria-label="Speed"></div></div>
@@ -1566,6 +1722,8 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
     list.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { const [sid, tid, i] = b.dataset.go.split("|"); jumpTo(sid, tid, i === undefined ? null : +i) });
   }
   fab.onclick = openSheet;
+  // Topics lives in the bar: it opens the menu, or minimizes it when it is already showing.
+  document.getElementById("topicsGo").onclick = () => sheet.hidden ? openSheet() : closeSheet();
   closeBtn.onclick = closeSheet;
   sheet.addEventListener("click", e => { if (e.target === sheet && !docked()) closeSheet() });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !sheet.hidden && !docked()) closeSheet() });
@@ -1647,6 +1805,11 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
 
   // Settings: everything about how the practice sounds, in one panel behind the gear.
   const SPEEDS = [["0.7", "Slow"], ["0.85", "Normal"], ["1", "Fast"]], REPEATS = ["1", "2", "3", "5", "inf"];
+  // Theme: Auto follows the device; Light or Dark stays on this device.
+  const THEMES = [["auto", "Auto"], ["light", "Light"], ["dark", "Dark"]];
+  let theme = store.get("theme", "auto");
+  const applyTheme = () => { if (theme === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.dataset.theme = theme };
+  applyTheme();
   const repLabel = v => v === "inf" ? "∞" : v + "×";
   function setSummary() {
     return [`${(SPEEDS.find(x => x[0] === opts.speed) || SPEEDS[1])[1]} speed`, `Repeat ${repLabel(opts.repeat)}`,
@@ -1655,6 +1818,7 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
   const settingsBack = document.getElementById("settingsBack");
   function paintSettings() {
     const seg = (id, list, cur, label) => { document.getElementById(id).innerHTML = list.map(v => { const val = Array.isArray(v) ? v[0] : v; return `<button type="button" role="radio" aria-checked="${val === cur}" data-v="${val}">${esc(label(v))}</button>` }).join("") };
+    seg("segTheme", THEMES, theme, v => v[1]);
     seg("segSpeed", SPEEDS, opts.speed, v => v[1]);
     seg("segRepeat", REPEATS, opts.repeat, repLabel);
     document.getElementById("swEcho").setAttribute("aria-checked", String(!!opts.echo));
@@ -1673,6 +1837,7 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
   document.getElementById("settingsDone").onclick = closeSettings;
   settingsBack.addEventListener("click", e => { if (e.target === settingsBack) closeSettings() });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !settingsBack.hidden) { e.stopPropagation(); closeSettings() } }, true);
+  document.getElementById("segTheme").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; theme = b.dataset.v; store.set("theme", theme); applyTheme(); paintSettings() };
   document.getElementById("segSpeed").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; opts.speed = b.dataset.v; store.set("speed", opts.speed); paintSettings() };
   document.getElementById("segRepeat").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; opts.repeat = b.dataset.v; store.set("repeat", opts.repeat); if (reading) reading.total = repeats(); paintSettings() };
   document.getElementById("swEcho").onclick = () => { opts.echo = !opts.echo; store.set("echo", opts.echo); paintSettings() };
