@@ -432,6 +432,12 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .how b { color: var(--ink) }
 .rec-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px }
 .rec-row:empty { display: none }
+/* your recording, with a small trash can on its top right corner */
+.mine-wrap { position: relative; display: inline-flex }
+.trash { position: absolute; top: -7px; right: -7px; width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border-radius: 50%;
+  border: 1px solid var(--stroke, var(--line)); background: var(--glass-strong, var(--surface)); color: var(--muted); box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transition: color .15s, background .15s }
+.trash:hover { color: #fff; background: var(--danger, #FF453A); border-color: transparent }
 .rec-live { color: var(--muted); font-size: 14px }
 .act.fav { color: var(--muted); padding-inline: 12px }
 .act.fav[aria-pressed="true"] { color: #FFC800 }
@@ -596,7 +602,15 @@ html .bar { background: var(--glass-strong); border-bottom: 1px solid var(--stro
 html .card, html .tile, html .progress-card, html .t-info.topic-head {
   background: var(--glass); border: 1px solid var(--stroke); border-radius: 22px; box-shadow: var(--spec), var(--shadow);
   -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%) }
-html .t-info.topic-head { border-radius: 0 0 18px 18px; border-top: 0; box-shadow: var(--shadow) }
+html #barTopic { background: transparent; border-bottom: 0 }
+html .t-info.topic-head { margin: 4px auto 10px; padding: 12px 16px !important; border-radius: 16px; box-shadow: var(--spec), var(--shadow);
+  background: var(--glass-strong); display: grid; gap: 4px; font-size: 15px; line-height: 1.4 }
+html .t-info b { color: var(--ink); font-weight: 650 }
+html .t-info { color: var(--muted) }
+/* ⓘ: a soft blue circle when the card is open; no ring after a click */
+html .yt.info-btn[aria-expanded="true"] { background: var(--tint); color: var(--accent) }
+html .yt.info-btn[aria-expanded="true"]::after { display: none !important }  /* the card is open: no label over it */
+html button:focus:not(:focus-visible) { outline: none }
 html .tile { transition: transform .2s ease, background .2s, box-shadow .2s }
 html .tile:hover:not(:disabled) { transform: translateY(-2px); background: var(--glass-hi); box-shadow: var(--spec), 0 16px 40px rgba(0,0,0,.28) }
 html .tile .s, html .tile .n { color: var(--muted) }
@@ -1523,7 +1537,7 @@ html button:focus-visible, html select:focus-visible { outline: 2px solid var(--
   function recRow(it, i) {
     if (recording && recording.en === it.en) return `<span class="rec-live">Recording. Say the phrase, then press Stop.</span>`;
     if (!recs.has(it.en)) return "";
-    return `<button class="act" type="button" data-mine="${i}">▶ Me</button>${tts ? `<button class="act" type="button" data-both="${i}">▶ Voice, then me</button>` : ""}`;
+    return `<span class="mine-wrap"><button class="act" type="button" data-mine="${i}">▶ My voice</button><button class="trash" type="button" data-del="${i}" aria-label="Delete my recording" data-tip="Delete" data-tip-up><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button></span>`;
   }
   function paintRec(it, i) {
     const row = document.getElementById("rec" + i);
@@ -1577,7 +1591,7 @@ html button:focus-visible, html select:focus-visible { outline: 2px solid var(--
   function stopMine() {
     if (!mine) return;
     mine.audio.pause();
-    if (mine.btn) mine.btn.innerHTML = "▶ Me", mine.btn.classList.remove("stopping");
+    if (mine.btn) mine.btn.innerHTML = "▶ My voice", mine.btn.classList.remove("stopping");
     mine = null;
   }
   function playMine(it, btn) {
@@ -1604,11 +1618,15 @@ html button:focus-visible, html select:focus-visible { outline: 2px solid var(--
     });
   }
   view.addEventListener("click", e => {
-    const m = e.target.closest("[data-mine]"), both = e.target.closest("[data-both]");
-    if (!m && !both) return;
+    const m = e.target.closest("[data-mine]"), del = e.target.closest("[data-del]");
+    if (!m && !del) return;
     const c = stack[stack.length - 1], topic = S.find(x => x.id === c.s).topics.find(x => x.id === c.t);
-    if (m) playMine(topic.items[+m.dataset.mine], m);
-    else { const it = topic.items[+both.dataset.both]; say(it.en, null, both, () => playMine(it)) }
+    if (m) { playMine(topic.items[+m.dataset.mine], m); return }
+    // the trash can: your recording of this phrase is gone, and Record starts fresh
+    const i = +del.dataset.del, it = topic.items[i];
+    stopMine();
+    if (recs.has(it.en)) { URL.revokeObjectURL(recs.get(it.en)); recs.delete(it.en) }
+    paintRec(it, i);
   });
 
   function wireDone(t) {
