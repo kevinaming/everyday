@@ -726,6 +726,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     document.getElementById("readerBar").hidden = true;
     view.style.paddingBottom = "";
     view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
+    syncCardBtns();
     if (staged()) exitStage();
   }
   function readingAnchor() {
@@ -754,6 +755,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     if (rep === 1 && !from) view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
     if (i >= items.length || !cards[i]) { if (S.find(x => x.id === run.sid).group === "main") setPracticed(S.find(x => x.id === run.sid).topics[run.idx].id, true); offerNext(run.sid, run.idx, run); return }
     cards[i].classList.add("reading"); cards[i].classList.remove("heard");
+    syncCardBtns();
     panelMark(i, "now");
     if (!from) stageShow();
     document.getElementById("readerCount").textContent =
@@ -833,11 +835,22 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   }
   const readNext = () => reading && readJump(reading.i + 1);
   const readPrev = () => reading && readJump(reading.i - 1);
+  // While Read all runs, the card being read says Pause (or Resume when paused) instead of Listen, and works like the player's button.
+  const PAUSE_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" style="vertical-align:-2px"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+  function syncCardBtns() {
+    view.querySelectorAll("[data-say]").forEach(b => {
+      if (b === speakingBtn) return;
+      const on = !!reading && +b.dataset.say === reading.i;
+      b.innerHTML = on ? (reading.paused ? "▶ Resume" : `${PAUSE_SVG} Pause`) : "▶ Listen";
+      b.setAttribute("aria-label", on ? (reading.paused ? "Resume reading" : "Pause reading") : "Listen");
+    });
+  }
   function setPlayIcon(paused) {
     const b = document.getElementById("readerPlay");
     b.innerHTML = paused ? PLAY_ICON : PAUSE_ICON;
     b.setAttribute("aria-label", paused ? "Play" : "Pause");
     b.title = paused ? "Play (space)" : "Pause (space)";
+    syncCardBtns();
   }
   // Where Play goes on: the word after the last one said. The voice reports each word it starts (most voices);
   // if it doesn't, the place is worked out from the time spent, at the start of the word it was on.
@@ -1191,7 +1204,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
   }
   function wireSay(t) {
-    view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => say(t.items[+b.dataset.say].en, b.dataset.rate ? parseFloat(b.dataset.rate) : null, b));
+    view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => (reading && +b.dataset.say === reading.i) ? readToggle() : say(t.items[+b.dataset.say].en, b.dataset.rate ? parseFloat(b.dataset.rate) : null, b));
   }
   const STAR = on => `<svg viewBox="0 0 24 24" width="16" height="16" fill="${on ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
   const MIC = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>';
