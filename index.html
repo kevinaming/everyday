@@ -848,6 +848,26 @@ html .tile:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(-
 html .tile:active:not(:disabled) { transform: scale(.99); box-shadow: var(--spec), 0 2px 6px rgba(0, 0, 0, .1) }
 @media (hover: hover) { html .card:hover { transform: scale(1.004); box-shadow: var(--spec), 0 4px 14px rgba(0, 0, 0, .1) } }
 html .card:active { box-shadow: var(--spec), 0 2px 6px rgba(0, 0, 0, .08) }
+/* ---- Phones: the selected option always stays inside its gray bar ----
+   Phone browsers can enlarge text and give buttons their own padding and line height, which made the white pill taller
+   than a bar with a fixed height. Now the bar grows with its content and every option has an exact height. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100% }
+button { -webkit-appearance: none; appearance: none }
+html .seg { align-items: stretch; max-width: 100% }
+html .seg button { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; line-height: 1.1; white-space: nowrap }
+html .settings .seg { height: auto; min-height: 30px; padding: 2px }
+html .settings .seg button { height: 26px; min-height: 26px; padding-top: 0; padding-bottom: 0; margin: 0 }
+html .settings .drop-head { box-sizing: border-box; line-height: 1.1 }
+html .settings .switch { box-sizing: border-box }
+/* ---- Narrow phones: the bar's buttons get a little smaller, so both groups stay inside the bar and the title keeps some room ---- */
+@media (max-width: 380px) {
+  html .bar-row { gap: 6px }
+  html .bar-row .cap { gap: 0; padding: 2px }
+  html .bar-row .yt { width: 34px; height: 34px }
+  html .bar-row .yt.fav-go { width: auto; padding: 0 8px }
+  html .bar-row .yt.info-btn { width: 28px; height: 28px }
+  html .bar-row .crumb { font-size: 14px }
+}
 </style>
 </head>
 <body>
