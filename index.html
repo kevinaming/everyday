@@ -663,6 +663,9 @@ html .reader-bar .rb-count { color: var(--ink); text-transform: none; letter-spa
 html .rb-track button::after { background: var(--stroke-soft); background: color-mix(in srgb, var(--ink) 18%, transparent) }
 html .rb-track button.done::after { background: var(--accent) }
 html .rb-track button i { background: var(--accent) }
+/* pointing at a phrase in the track: a soft glowing blue, with no box around it */
+html .reader-bar .rb-track button:hover { background: none }
+html .rb-track button:hover::after { background: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 70%, transparent) }
 html .spd-name { color: var(--accent) }
 html .spd input { accent-color: var(--accent) }
 
@@ -696,6 +699,29 @@ html .stage { background: var(--mesh), var(--bg) }
 @media (hover: hover) { html [data-tip]:hover::after { background: var(--glass-strong); color: var(--ink); border: 1px solid var(--stroke); border-radius: 8px; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px) } }
 html button:focus-visible, html select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
 @media (prefers-reduced-motion: reduce) { html .tile, html .act { transition: none } html .tile:hover:not(:disabled) { transform: none } }
+
+/* ---- Settings, refined: grouped rows with hairlines, quiet type, small controls (like macOS System Settings) ---- */
+html .settings { width: min(420px, 100%); padding: 18px 18px 20px; gap: 6px; border-radius: 22px; outline: none }
+html .settings-head { margin-bottom: 4px }
+html .settings-head h2 { font-size: 19px; font-weight: 600; letter-spacing: -.01em }
+html .done-link { background: none; border: 0; padding: 6px 2px; min-height: 0; color: var(--accent); font-size: 15px; font-weight: 600; border-radius: 8px }
+html .done-link:hover { opacity: .75 }
+html .settings h3 { margin: 12px 6px 4px; font-size: 11px; font-weight: 600; letter-spacing: .07em; color: var(--muted) }
+html .set-group { background: var(--glass); border: 1px solid var(--stroke-soft); border-radius: 14px; padding: 0 14px; box-shadow: var(--spec) }
+html .set-row { min-height: 48px; padding: 8px 0; gap: 12px; flex-wrap: nowrap }
+html .set-row + .set-row { border-top: 1px solid var(--stroke-soft) }
+html .set-name { font-size: 14.5px; font-weight: 500; gap: 1px }
+html .set-name small { font-size: 12px; font-weight: 400; color: var(--muted) }
+html .settings .seg { flex: none; height: 30px; padding: 2px; gap: 0; border: 0; border-radius: 9px; background: var(--hover); box-shadow: none }
+html .settings .seg button { min-height: 26px; min-width: 0; padding: 0 10px; font-size: 13px; font-weight: 500; border-radius: 7px; color: var(--ink) }
+html .settings .seg button + button { border-left: 0 }
+html .settings .seg button[aria-checked="true"] { background: var(--glass-hi); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .14), 0 0 0 .5px rgba(0, 0, 0, .04) }
+html .settings .switch { width: 42px; height: 25px; border: 0; background: var(--hover) }
+html .settings .switch::after { top: 2px; left: 2px; width: 21px; height: 21px }
+html .settings .switch[aria-checked="true"]::after { transform: translateX(17px) }
+html .settings .drop, html .settings .drop-head { width: auto }
+html .settings .drop-head { min-height: 30px; padding: 4px 10px; font-size: 13px; font-weight: 500; border-radius: 9px; background: var(--hover); border: 0; box-shadow: none }
+@media (max-width: 420px) { html .set-row { flex-wrap: wrap } html .set-row.set-switch { flex-wrap: nowrap } html .settings .seg button { padding: 0 8px } }
 </style>
 </head>
 <body>
@@ -717,17 +743,23 @@ html button:focus-visible, html select:focus-visible { outline: 2px solid var(--
 </header>
 <main id="view"></main>
 <div class="settings-back" id="settingsBack" hidden>
-  <div class="settings" role="dialog" aria-modal="true" aria-labelledby="setTitle">
-    <div class="settings-head"><h2 id="setTitle">Settings</h2><button class="close" id="settingsDone" type="button">Done</button></div>
+  <div class="settings" id="settingsBox" role="dialog" aria-modal="true" aria-labelledby="setTitle" tabindex="-1">
+    <div class="settings-head"><h2 id="setTitle">Settings</h2><button class="done-link" id="settingsDone" type="button">Done</button></div>
     <h3>Appearance</h3>
-    <div class="set-row"><span class="set-name">Theme<small>Auto follows your device.</small></span><div class="seg" id="segTheme" role="radiogroup" aria-label="Theme"></div></div>
+    <div class="set-group">
+      <div class="set-row"><span class="set-name">Theme<small>Auto follows your device</small></span><div class="seg" id="segTheme" role="radiogroup" aria-label="Theme"></div></div>
+    </div>
     <h3>Voice</h3>
-    <div class="set-row set-wide"><select class="speed" id="voicePick" aria-label="Voice" hidden></select></div>
-    <div class="set-row"><span class="set-name">Speed</span><div class="seg" id="segSpeed" role="radiogroup" aria-label="Speed"></div></div>
+    <div class="set-group">
+      <div class="set-row"><span class="set-name">Voice</span><select class="speed" id="voicePick" aria-label="Voice" hidden></select></div>
+      <div class="set-row"><span class="set-name">Speed</span><div class="seg" id="segSpeed" role="radiogroup" aria-label="Speed"></div></div>
+    </div>
     <h3>Practice</h3>
-    <div class="set-row"><span class="set-name">Repeat each phrase</span><div class="seg" id="segRepeat" role="radiogroup" aria-label="Repeat each phrase"></div></div>
-    <div class="set-row set-switch"><span class="set-name">Repeat after me<small>A silence after each phrase, so you can repeat it</small></span><button class="switch" id="swEcho" type="button" role="switch" aria-checked="false" aria-label="Repeat after me"></button></div>
-    <div class="set-row set-switch"><span class="set-name">Hide text<small>Listen only. Tap a card to see its text.</small></span><button class="switch" id="swHide" type="button" role="switch" aria-checked="false" aria-label="Hide text"></button></div>
+    <div class="set-group">
+      <div class="set-row"><span class="set-name">Repeat each phrase</span><div class="seg" id="segRepeat" role="radiogroup" aria-label="Repeat each phrase"></div></div>
+      <div class="set-row set-switch"><span class="set-name">Repeat after me<small>A silence after each phrase, to say it back</small></span><button class="switch" id="swEcho" type="button" role="switch" aria-checked="false" aria-label="Repeat after me"></button></div>
+      <div class="set-row set-switch"><span class="set-name">Hide text<small>Listen only; tap a card to see it</small></span><button class="switch" id="swHide" type="button" role="switch" aria-checked="false" aria-label="Hide text"></button></div>
+    </div>
   </div>
 </div>
 <div class="swipe-hint" id="swipeHint" aria-hidden="true">‹</div>
@@ -1849,7 +1881,7 @@ html button:focus-visible, html select:focus-visible { outline: 2px solid var(--
     g.classList.toggle("has-dot", !!(opts.echo || opts.practice));
     g.setAttribute("aria-label", "Settings: " + setSummary());
   }
-  function openSettings() { settingsBack.hidden = false; paintSettings(); document.getElementById("settingsDone").focus({ preventScroll: true }) }
+  function openSettings() { settingsBack.hidden = false; paintSettings(); document.getElementById("settingsBox").focus({ preventScroll: true }) }
   function closeSettings() { closeDrops(); settingsBack.hidden = true }
   document.getElementById("optsBtn").onclick = openSettings;
   document.getElementById("settingsDone").onclick = closeSettings;
@@ -1887,7 +1919,7 @@ html button:focus-visible, html select:focus-visible { outline: 2px solid var(--
       .sort((a, b) => (isEnUS(b) - isEnUS(a)) || (voiceRank(b) - voiceRank(a)) || a.name.localeCompare(b.name));
     if (!vs.length) { vp.hidden = true; dropify(vp); return }
     const cur = voice();
-    vp.innerHTML = vs.map(v => `<option value="${esc(voiceId(v))}"${cur && voiceId(v) === voiceId(cur) ? " selected" : ""}>${natural(v) ? "★ " : ""}Voice: ${esc(v.name)} · ${esc(region(v))}</option>`).join("");
+    vp.innerHTML = vs.map(v => `<option value="${esc(voiceId(v))}"${cur && voiceId(v) === voiceId(cur) ? " selected" : ""}>${natural(v) ? "★ " : ""}${esc(v.name)} · ${esc(region(v))}</option>`).join("");
     vp.hidden = false;
     dropify(vp);
   }
