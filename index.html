@@ -474,6 +474,10 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .info-btn { width: 32px; height: 32px; border: 0; box-shadow: none; color: var(--muted) }
 .info-btn[aria-expanded="true"] { color: var(--blue) }
 .done-btn[aria-pressed="true"] { background: rgba(73, 192, 248, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
+.bar-row { flex-wrap: nowrap }
+.bar-row .crumb { flex: 0 1 auto; min-width: 0 }
+.bar-row .crumb + .info-btn + .cap, .bar-row .crumb + .info-btn[hidden] + .cap, .bar-row .crumb + .cap { margin-left: auto }
+.topic-head.t-info { padding-block: 10px 12px !important; font-size: 15px }
 .t-info { margin-top: 8px; color: var(--muted); font-size: 15px; line-height: 1.4; display: grid; gap: 2px }
 .t-info b { color: var(--ink) }
 .topic-head { padding-block: 10px !important }
@@ -535,6 +539,7 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
     <button class="yt" id="home" type="button" aria-label="Home" data-tip="Home"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
     </div>
     <div class="crumb" id="crumb">Everyday English</div>
+    <button class="yt info-btn" id="infoBtn" type="button" aria-expanded="false" aria-controls="tInfo" aria-label="About this topic" data-tip="About this topic" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
     <div class="cap">
     <button class="yt yt-wide fav-go" id="favGo" type="button" aria-label="My phrases" data-tip="My phrases" data-tip-end><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="favCount">0</span></button>
     <button class="yt yt-wide optsBtn" id="optsBtn" type="button" aria-haspopup="dialog" aria-label="Settings" data-tip="Settings" data-tip-end><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span class="gear-rep" id="gearRep"></span></button>
@@ -999,6 +1004,11 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
   // The Topics button moves up while the player is on screen, so they never cover each other.
   new MutationObserver(() => document.body.classList.toggle("has-player", !document.getElementById("readerBar").hidden))
     .observe(document.getElementById("readerBar"), { attributes: true, attributeFilter: ["hidden"] });
+  document.getElementById("infoBtn").onclick = () => {
+    const box = document.getElementById("tInfo"), ib = document.getElementById("infoBtn");
+    if (!box) return;
+    const open = box.hidden; box.hidden = !open; ib.setAttribute("aria-expanded", String(open)); setBarH();
+  };
   function startFrom(k) {
     const cur = currentTopic();
     if (cur) startReading(cur.t.items, null, cur.s.id, cur.idx, k);
@@ -1304,14 +1314,9 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
     crumb.textContent = s.title;  // the bar says the section; the topic is in the row below
     if (s.group === "main") store.set("last", { t: t.id });
     document.getElementById("barTopic").innerHTML = `
-      <div class="topic-head">
-        <div class="thead-row">
-          <h1 class="t-title" title="${esc(t.title)}">${esc(t.title)}</h1>
-          ${t.tip ? `<button class="yt info-btn" id="infoBtn" type="button" aria-expanded="false" aria-controls="tInfo" aria-label="About this topic" data-tip="About this topic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>` : ""}
-
-        </div>
-        ${t.tip ? `<div class="t-info" id="tInfo" hidden><b>${esc(t.title)}</b>${esc(t.tip)}</div>` : ""}
-      </div>`;
+      ${t.tip ? `<div class="topic-head t-info" id="tInfo" hidden><b>${esc(t.title)}</b>${esc(t.tip)}</div>` : ""}`;
+    const ib = document.getElementById("infoBtn");
+    ib.hidden = !t.tip; ib.setAttribute("aria-expanded", "false");
     const nx = nextTopic(sid, idx), pv = prevTopic(sid, idx);
     view.innerHTML = `
       <div class="cards" id="cardsBox">${t.items.length ? t.items.map((it, i) => card(it, i, t)).join("") : `<p class="note">Press the star on any phrase, and it will appear here.</p>`}</div>
@@ -1325,8 +1330,6 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
       if (stack.length >= 2) stack[stack.length - 2] = { v: "section", s: ns };
       stack[stack.length - 1] = { v: "topic", s: ns, t: nt }; history.replaceState({ depth: stack.length }, ""); render();
     });
-    const ib = document.getElementById("infoBtn");
-    if (ib) ib.onclick = () => { const box = document.getElementById("tInfo"), open = box.hidden; box.hidden = !open; ib.setAttribute("aria-expanded", String(open)); setBarH() };
     wireSay(t);
     showPlayer();
     wireCardTools(t);
@@ -1465,7 +1468,8 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
     document.getElementById("back").disabled = stack.length < 2;
     document.getElementById("back").hidden = stack.length < 2;
     document.getElementById("home").hidden = stack.length < 2;
-    document.getElementById("navCap").hidden = stack.length < 2;  // on the home page the title starts at the left edge
+    document.getElementById("navCap").hidden = stack.length < 2;
+    document.getElementById("infoBtn").hidden = true;  // on the home page the title starts at the left edge
     if (st.v === "home") renderHome();
     else if (st.v === "section") renderSection(st.s);
     else renderTopic(st.s, st.t);
