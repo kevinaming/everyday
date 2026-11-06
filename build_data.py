@@ -18,7 +18,13 @@ def topics(prefix, rows, natural=True):
             line = line.strip()
             # The Contractions section shows the full form next to the short one, so it never goes through contract().
             if not natural:
-                line = line.replace(" -> ", ARROW)
+                # Contractions section: the setting shows one form, the short one (on) or the full one (off)
+                full, _, short = line.partition(" -> ")
+                it = {"en": short or full}
+                if short and full != short:
+                    it["f"] = full
+                items.append(it)
+                continue
             else:
                 assert "->" not in line, line
                 line = contract(line)
@@ -55,7 +61,7 @@ assert not spanish, spanish
 all_en = [i["en"] for s in SECTIONS for t in s["topics"] for i in t["items"]]
 repeats = sorted({e for e in all_en if all_en.count(e) > 1})
 assert not repeats, repeats
-long = [e for e in all_en for side in e.split(ARROW) if len(side.split()) > 15]
+long = [e for e in all_en if len(e.split()) > 15]
 assert not long, long
 for s in SECTIONS:
     for t in s["topics"]:

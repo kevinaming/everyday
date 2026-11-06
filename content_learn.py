@@ -5,10 +5,10 @@ CONTRACTIONS = [
 ("I'm, you're, he's, she's, it's, we're, they're", "Be + subject: the verb gets shorter and joins the word before it.", """
 I am tired. -> I'm tired.
 I am at home. -> I'm at home.
-You are right. -> You're right.
+You are right about that. -> You're right about that.
 You are very kind. -> You're very kind.
 He is my brother. -> He's my brother.
-She is a nurse. -> She's a nurse.
+She is a doctor. -> She's a doctor.
 It is cold today. -> It's cold today.
 It is late. -> It's late.
 We are ready. -> We're ready.
@@ -36,7 +36,7 @@ This is not my car. -> This isn't my car.
 The store is not open yet. -> The store isn't open yet.
 They are not here. -> They aren't here.
 The kids are not hungry. -> The kids aren't hungry.
-I am not sure. -> I'm not sure.
+I am not ready yet. -> I'm not ready yet.
 It was not easy. -> It wasn't easy.
 He was not at home. -> He wasn't at home.
 The food was not bad. -> The food wasn't bad.
@@ -111,7 +111,7 @@ Who is that man? -> Who's that man?
 Who is coming tonight? -> Who's coming tonight?
 """),
 ("The confusing ones", "Same sound, different meaning. It's = it is, but its = belongs to it.", """
-It is raining. -> It's raining.
+It is raining outside. -> It's raining outside.
 The dog wants its toy.
 You are late. -> You're late.
 Is this your bag?
