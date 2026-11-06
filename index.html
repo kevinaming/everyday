@@ -463,8 +463,25 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--muted); transition: transform .15s }
 .switch[aria-checked="true"] { background: var(--green); border-color: var(--green) }
 .switch[aria-checked="true"]::after { transform: translateX(22px); background: var(--on-green) }
-.set-sum { display: block; margin-top: 8px; border: 0; background: none; padding: 2px 0; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; text-align: left }
-.set-sum:hover { color: var(--blue); text-decoration: underline }
+/* Topic header: one row, title on the left and the actions on the right */
+.thead-row { display: flex; align-items: center; gap: 8px; min-width: 0 }
+.t-title { flex: 1 1 auto; min-width: 0; margin: 0 !important; font-size: clamp(18px, 2.4vw, 24px); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.t-acts { flex: none; display: flex; align-items: center; gap: 8px; margin-left: auto }
+.t-acts .act.play { min-height: 40px; padding-block: 6px }
+.icon-btn { flex: none; display: inline-grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 2px solid var(--line); border-radius: 12px; background: transparent; color: var(--ink); box-shadow: 0 2px 0 var(--line); font-weight: 900; font-size: 17px }
+.icon-btn:hover { background: var(--surface) }
+.icon-btn:active { transform: translateY(2px); box-shadow: none }
+.info-btn { width: 32px; height: 32px; border: 0; box-shadow: none; color: var(--muted) }
+.info-btn[aria-expanded="true"] { color: var(--blue) }
+.done-btn[aria-pressed="true"] { background: rgba(73, 192, 248, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
+.t-info { margin-top: 8px; color: var(--muted); font-size: 15px; line-height: 1.4; display: grid; gap: 2px }
+.t-info b { color: var(--ink) }
+.topic-head { padding-block: 10px !important }
+.optsBtn { position: relative; width: auto; min-width: 40px; gap: 4px; padding: 0 10px }
+.gear-rep { font-weight: 900; font-size: 13px; color: var(--blue) }
+.gear-rep:empty { display: none }
+.optsBtn.has-dot::after { content: ""; position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue) }
+@media (max-width: 560px) { .t-acts .lbl { display: none } .t-acts .act.play { width: 40px; padding: 0; justify-content: center } }
 @media (prefers-reduced-motion: reduce) { .switch::after { transition: none } }
 /* Home: a green square with a house, next to Back */
 .navbtn.home-go { display: inline-grid; place-items: center; width: 40px; padding: 0; background: var(--green); color: var(--on-green); border-color: var(--green); box-shadow: 0 2px 0 var(--green-d) }
@@ -478,7 +495,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     <button class="navbtn home-go" id="home" type="button" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
     <div class="crumb" id="crumb">Everyday English</div>
     <button class="navbtn fav-go" id="favGo" type="button" aria-label="My phrases" title="My phrases"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="favCount">0</span></button>
-    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-haspopup="dialog" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-haspopup="dialog" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span class="gear-rep" id="gearRep"></span></button>
   </div>
   <div id="barTopic"></div>
 </header>
@@ -759,7 +776,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     clearTimeout(r.timer); cancelAnimationFrame(fillRaf);
     if (r.undo) r.undo();
     speechSynthesis.cancel();
-    r.btn.innerHTML = "▶ Read all"; r.btn.classList.remove("stopping");
+    r.btn.innerHTML = '▶ <span class="lbl">Read all</span>'; r.btn.classList.remove("stopping");
     document.getElementById("readerBar").hidden = true;
     view.style.paddingBottom = "";
     view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
@@ -781,7 +798,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     document.getElementById("readerTrack").innerHTML = items.map((_, k) => `<button type="button" data-k="${k}" aria-label="Phrase ${k + 1}"><i></i></button>`).join("");
     setPlayIcon(paused);
     view.querySelectorAll(".card.heard").forEach(c => c.classList.remove("heard"));
-    btn.innerHTML = "■ Stop reading"; btn.classList.add("stopping");
+    btn.innerHTML = '■ <span class="lbl">Stop</span>'; btn.classList.add("stopping");
     document.getElementById("readerBar").hidden = false;
     readAt(start, items, reading, 1);
   }
@@ -1205,16 +1222,18 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     const s = S.find(x => x.id === sid);
     const idx = s.topics.findIndex(x => x.id === tid);
     const t = s.topics[idx];
-    crumb.textContent = t.title;
+    crumb.textContent = s.title;  // the bar says the section; the topic is in the row below
     if (s.group === "main") store.set("last", { t: t.id });
     document.getElementById("barTopic").innerHTML = `
       <div class="topic-head">
-        <div class="eyebrow">${esc(s.title)}</div>
-        <h1>${esc(t.title)}</h1>
-        ${t.tip ? `<p class="tip">${esc(t.tip)}</p>` : ""}
-        ${tts && t.items.length ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Read all</button>
-          <button class="toggle full-btn" id="fullBtn" type="button" title="Show the text big, with only the player"><svg viewBox="0 0 24 24" width="15" height="15" style="vertical-align:-2px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg> Full screen</button>
-          ${s.group === "main" ? `<button class="toggle" id="doneBtn" type="button" aria-pressed="${!!practiced[t.id]}">✓ Practiced</button>` : ""}</div><button class="set-sum" id="setSum" type="button" title="Change the settings">${esc(setSummary())}</button>` : ""}
+        <div class="thead-row">
+          <h1 class="t-title" title="${esc(t.title)}">${esc(t.title)}</h1>
+          ${t.tip ? `<button class="icon-btn info-btn" id="infoBtn" type="button" aria-expanded="false" aria-controls="tInfo" aria-label="About this topic" title="About this topic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>` : ""}
+          ${tts && t.items.length ? `<div class="t-acts"><button class="act play" id="playAll" type="button">▶ <span class="lbl">Read all</span></button>
+            <button class="icon-btn" id="fullBtn" type="button" aria-label="Full screen" title="Full screen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>
+            ${s.group === "main" ? `<button class="icon-btn done-btn" id="doneBtn" type="button" aria-pressed="${!!practiced[t.id]}" aria-label="Practiced" title="Practiced">✓</button>` : ""}</div>` : ""}
+        </div>
+        ${t.tip ? `<div class="t-info" id="tInfo" hidden><b>${esc(t.title)}</b>${esc(t.tip)}</div>` : ""}
       </div>`;
     const nx = nextTopic(sid, idx), pv = prevTopic(sid, idx);
     view.innerHTML = `
@@ -1231,8 +1250,8 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     });
     const pa = document.getElementById("playAll");
     if (pa) pa.onclick = () => { if (reading) stopReading(); else startReading(t.items, pa, sid, idx) };
-    const ss = document.getElementById("setSum");
-    if (ss) ss.onclick = openSettings;
+    const ib = document.getElementById("infoBtn");
+    if (ib) ib.onclick = () => { const box = document.getElementById("tInfo"), open = box.hidden; box.hidden = !open; ib.setAttribute("aria-expanded", String(open)); setBarH() };
     const fb = document.getElementById("fullBtn");
     if (fb) fb.onclick = () => enterStage(false);
     wireSay(t);
@@ -1561,8 +1580,10 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     seg("segRepeat", REPEATS, opts.repeat, repLabel);
     document.getElementById("swEcho").setAttribute("aria-checked", String(!!opts.echo));
     document.getElementById("swHide").setAttribute("aria-checked", String(!!opts.practice));
-    const sum = document.getElementById("setSum");
-    if (sum) sum.textContent = setSummary();
+    const g = document.getElementById("optsBtn");
+    document.getElementById("gearRep").textContent = opts.repeat === "1" ? "" : repLabel(opts.repeat);
+    g.classList.toggle("has-dot", !!(opts.echo || opts.practice));
+    g.setAttribute("aria-label", "Settings: " + setSummary());
   }
   function openSettings() { settingsBack.hidden = false; paintSettings(); document.getElementById("settingsDone").focus({ preventScroll: true }) }
   function closeSettings() { closeDrops(); settingsBack.hidden = true }
@@ -1575,6 +1596,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   document.getElementById("swEcho").onclick = () => { opts.echo = !opts.echo; store.set("echo", opts.echo); paintSettings() };
   document.getElementById("swHide").onclick = () => { opts.practice = !opts.practice; store.set("practice", opts.practice); renderKeepPlace(); paintSettings() };
   if (!SPEEDS.some(x => x[0] === opts.speed)) opts.speed = "0.85";
+  paintSettings();
 
   document.getElementById("back").onclick = back;
   document.getElementById("home").onclick = () => { if (stack.length > 1) history.go(1 - stack.length) };
