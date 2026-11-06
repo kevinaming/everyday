@@ -8,6 +8,8 @@
 <script>
   // The chosen theme is set before anything is drawn, so a reload never flashes the other one first.
   try { var t = JSON.parse(localStorage.getItem("ee_theme")); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t } catch (e) {}
+  // Until the page is drawn, the bar and the content stay invisible, so a reload never shows the home header first.
+  document.documentElement.classList.add("booting");
 </script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -806,6 +808,9 @@ html .drop.open .drop-list { margin: 0; padding: 0 5px 5px; border: 0; border-ra
   -webkit-backdrop-filter: none; backdrop-filter: none; border-top: 1px solid var(--stroke-soft); padding-top: 5px }
 :root[data-theme="light"] .drop.open .drop-box { background: #FFFFFF; border-color: rgba(0, 0, 0, .08) }
 @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .drop.open .drop-box { background: #FFFFFF; border-color: rgba(0, 0, 0, .08) } }
+
+/* while the page starts: nothing in the bar or the content until the right page is drawn */
+html.booting .bar-row, html.booting main, html.booting #barTopic, html.booting .reader-bar { visibility: hidden }
 </style>
 </head>
 <body>
@@ -1758,6 +1763,9 @@ html .drop.open .drop-list { margin: 0; padding: 0 5px 5px; border: 0; border-ra
   }
 
   function render() {
+    // The address keeps the page you are on (#vocab-v2), so a reload opens the same page.
+    const cur = stack[stack.length - 1], tag = cur.v === "topic" ? `#${cur.s}-${cur.t}` : cur.v === "section" ? `#${cur.s}` : "";
+    if (location.hash !== tag) history.replaceState(history.state, "", location.pathname + location.search + tag);
     if (tts) { hideNext(); reading = null; speechSynthesis.cancel(); speakingBtn = null; document.getElementById("readerBar").hidden = true; view.style.paddingBottom = "" }
     if (staged() && stack[stack.length - 1].v !== "topic") exitStage();
     const st = stack[stack.length - 1];
@@ -2043,6 +2051,7 @@ html .drop.open .drop-list { margin: 0; padding: 0 5px 5px; border: 0; border-ra
   }
   applyDock();
   render();
+  document.documentElement.classList.remove("booting");  // the page is drawn: show it
 })();
 </script>
 </body>
