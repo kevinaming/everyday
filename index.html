@@ -947,7 +947,7 @@ html .settings .switch { box-sizing: border-box }
   </div>
 </div>
 
-<script src="data.js?v=037f9b52"></script>
+<script src="data.js?v=1ca95b55"></script>
 <script>
 (() => {
   const S = window.SECTIONS || [];
@@ -1761,7 +1761,7 @@ html .settings .switch { box-sizing: border-box }
       paintRec(it, i);
     } catch (e) {
       recording = null;
-      row.innerHTML = `<span class="rec-live">The microphone is not available. Please allow it in your browser, and try again.</span>`;
+      row.innerHTML = `<span class="rec-live">The microphone isn't available. Please allow it in your browser and try again.</span>`;
     }
   }
   // Quick access in the top bar: a star with how many phrases are kept; it opens My phrases from anywhere.
@@ -1816,11 +1816,6 @@ html .settings .switch { box-sizing: border-box }
     if (recs.has(it.en)) { URL.revokeObjectURL(recs.get(it.en)); recs.delete(it.en) }
     paintRec(it, i);
   });
-
-  function wireDone(t) {
-    const db = document.getElementById("doneBtn");
-    if (db) db.onclick = () => { const on = !practiced[t.id]; setPracticed(t.id, on); db.setAttribute("aria-pressed", String(on)); if (!sheet.hidden) renderSheet() };
-  }
 
   function render() {
     // The address keeps the page you are on (#vocab-v2), so a reload opens the same page.

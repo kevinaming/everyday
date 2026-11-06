@@ -45,7 +45,7 @@ SECTIONS = [
     {"id": "questions", "title": "Common questions", "sub": "The questions people ask, and real answers", "tag": "Talk", "topics": topics("q", QUESTIONS)},
     {"id": "everyday", "title": "Everyday life", "sub": "Food, work, weather, shopping and more", "tag": "Talk", "topics": topics("e", EVERYDAY)},
     {"id": "story", "title": "Telling a story", "sub": "The past, step by step", "tag": "Talk", "topics": topics("s", STORY)},
-    {"id": "react", "title": "Reacting and giving opinions", "sub": "Agree, disagree, and show interest", "tag": "Talk", "topics": topics("r", REACT)},
+    {"id": "react", "title": "Reacting and giving opinions", "sub": "Agree, disagree and show interest", "tag": "Talk", "topics": topics("r", REACT)},
     {"id": "mistakes", "title": "Common mistakes", "sub": "Say it the right way", "tag": "Fix", "topics": topics("x", MISTAKES)},
 ]
 for s in SECTIONS:

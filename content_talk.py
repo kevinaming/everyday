@@ -66,7 +66,7 @@ Let me see if I got that right.
 Can you say it in a different way?
 I'm sorry, my English isn't perfect yet.
 """),
-("Ending a conversation", "End kindly: a reason, a thank you, and a goodbye.", """
+("Ending a conversation", "End kindly: a reason, a thank you and a goodbye.", """
 Well, it was nice talking to you.
 I'm sorry, I have to go.
 I don't want to keep you.
@@ -631,7 +631,7 @@ MISTAKES = [
 ("He, she, it + s", "With he, she and it, the verb ends in -s: she works, it fails.", """
 She works at a bank.
 He lives in Texas.
-It learns from examples.
+My dad watches the news every night.
 My son plays soccer.
 The store opens at nine.
 It fails every time.
@@ -642,7 +642,7 @@ Does she know?
 My mom calls me every day.
 """),
 ("Present simple for general facts", "Facts and habits use the present simple, not the past.", """
-We show it a lot of data.
+My daughter walks to school every day.
 The bus comes every hour.
 Water boils at one hundred degrees.
 I always drink coffee in the morning.

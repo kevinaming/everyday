@@ -19,8 +19,9 @@ SUBJECT = [("I am", "I'm"), ("you are", "you're"), ("we are", "we're"), ("they a
 PERFECT = [("I have", "I've"), ("you have", "you've"), ("we have", "we've"), ("they have", "they've"), ("it has", "it's"), ("should have", "should've"),
            ("could have", "could've"), ("would have", "would've")]
 # Where the pair is not really subject + verb, or the short form sounds wrong, both words stay:
-# "the key idea here is", "the change you made there is lost", "reading it is the most", "where we are on the page".
-KEEP = re.compile(r"(?:\b(?:idea|made|put|saved|stored)\s+(?:here|there)\s+is\b|\b\w+ing\s+it\s+is\b|\bwhere\s+(?:I\s+am|you\s+are|we\s+are|they\s+are|it\s+is)\b)", re.I)
+# "the key idea here is", "the change you made there is lost", "reading it is the most", "where we are on the page",
+# "the food here is amazing" (after another word, here is / there is stay apart; at the start: "There's a problem").
+KEEP = re.compile(r"(?:(?<=\w\s)(?:here|there)\s+is\b|\b(?:idea|made|put|saved|stored)\s+(?:here|there)\s+is\b|\b\w+ing\s+it\s+is\b|\bwhere\s+(?:I\s+am|you\s+are|we\s+are|they\s+are|it\s+is)\b)", re.I)
 RX = [(re.compile(rf"\b{re.escape(a)}\b", re.I), b) for a, b in NOT]
 RX += [(re.compile(rf"\b{re.escape(a)}\b{WORD}", re.I), b) for a, b in SUBJECT_NOT + SUBJECT]
 RX += [(re.compile(rf"\b{re.escape(a)}\b(?=\s+(?:not\s+|already\s+|just\s+|never\s+|also\s+)?{PARTICIPLE}\b)", re.I), b) for a, b in PERFECT]
