@@ -518,6 +518,8 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .spd-name { max-width: 0; overflow: hidden; white-space: nowrap; font-size: 12px; font-weight: 900; color: var(--green); text-transform: uppercase; transition: max-width .2s }
 .spd:hover .spd-name, .spd:focus-within .spd-name { max-width: 60px; margin-right: 10px }
 @media (hover: none) { .spd { display: none } }
+body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
+.reader-bar.idle #readerPrev, .reader-bar.idle #readerNext, .reader-bar.idle #readerAgain, .reader-bar.idle #readerStop { opacity: .3; pointer-events: none }
 @media (prefers-reduced-motion: reduce) { .spd input, .spd-name { transition: none } }
 @media (prefers-reduced-motion: reduce) { .switch::after { transition: none } }
 /* Home: a green square with a house, next to Back */
@@ -787,28 +789,23 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     for (let k = si - 1; k >= 0; k--) if (S[k].group === S[si].group && S[k].topics.length) return { sid: S[k].id, topic: S[k].topics[S[k].topics.length - 1] };
     return null;
   }
+  // Read all goes on through every topic and section, saying where it goes; at the very end it says so and stops.
   function offerNext(sid, idx, run) {
     const nx = nextTopic(sid, idx);
-    if (!nx) { stopReading(); return }
-    const nxt = nx.topic;
-    const pop = document.getElementById("nextPop"), ring = pop.querySelector(".np-ring");
-    document.getElementById("npTitle").textContent = nx.newSection ? `${S.find(x => x.id === nx.sid).title} › ${nxt.title}` : nxt.title;
-    const r = view.getBoundingClientRect();
-    pop.style.left = (r.left + r.width / 2) + "px";
-    pop.hidden = false;
-    ring.classList.remove("run"); void ring.getBoundingClientRect(); ring.classList.add("run");
-    try { window.focus(); document.getElementById("npGo").focus({ preventScroll: true }) } catch (e) {}
-    const go = () => {
-      hideNext();
-      if (reading !== run) return;
-      if (nx.newSection && stack.length >= 2) stack[stack.length - 2] = { v: "section", s: nx.sid };
-      stack[stack.length - 1] = { v: "topic", s: nx.sid, t: nxt.id }; history.replaceState({ depth: stack.length }, ""); render();
-      const pa = document.getElementById("playAll");
-      if (pa) startReading(nxt.items, pa, nx.sid, nx.idx);
-    };
-    nextTimer = setTimeout(go, 3000);
-    document.getElementById("npGo").onclick = go;
-    document.getElementById("npCancel").onclick = () => { hideNext(); stopReading() };
+    if (!nx) {
+      const u = new SpeechSynthesisUtterance("That's everything. Great job!");
+      useVoice(u, voice()); u.rate = parseFloat(opts.speed);
+      stopReading(); speechSynthesis.speak(u);
+      return;
+    }
+    const nxt = nx.topic, sec = S.find(x => x.id === nx.sid);
+    const words = nx.newSection ? `Now we'll practice ${sec.title}. ${nxt.title}.` : `Next: ${nxt.title}.`;
+    if (nx.newSection && stack.length >= 2) stack[stack.length - 2] = { v: "section", s: nx.sid };
+    stack[stack.length - 1] = { v: "topic", s: nx.sid, t: nxt.id }; history.replaceState({ depth: stack.length }, "");
+    const wasStaged = staged();
+    render();
+    if (wasStaged && !staged()) enterStage(true);
+    startReading(nxt.items, null, nx.sid, nx.idx, 0, false, words);
   }
 
   function stopReading() {
@@ -818,11 +815,9 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     clearTimeout(r.timer); cancelAnimationFrame(fillRaf);
     if (r.undo) r.undo();
     speechSynthesis.cancel();
-    r.btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>'; r.btn.classList.remove("stopping"); r.btn.dataset.tip = "Read all"; r.btn.setAttribute("aria-label", "Read all");
-    document.getElementById("readerBar").hidden = true;
-    view.style.paddingBottom = "";
     view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
     syncCardBtns();
+    showPlayer();
     if (staged()) exitStage();
   }
   function readingAnchor() {
@@ -832,7 +827,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   // Pause after a phrase: in echo mode as long as the phrase itself, so you can say it back.
   const pauseAfter = ms => opts.echo ? Math.max(1200, ms + 400) : 700;
 
-  function startReading(items, btn, sid, idx, start = 0, paused = false) {
+  function startReading(items, btn, sid, idx, start = 0, paused = false, announce = "") {
     stopMine();
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last phrases can also reach the reading place
     speechSynthesis.cancel(); resetBtn();
@@ -840,9 +835,23 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     document.getElementById("readerTrack").innerHTML = items.map((_, k) => `<button type="button" data-k="${k}" aria-label="Phrase ${k + 1}"><i></i></button>`).join("");
     setPlayIcon(paused);
     view.querySelectorAll(".card.heard").forEach(c => c.classList.remove("heard"));
-    btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>'; btn.classList.add("stopping"); btn.dataset.tip = "Stop reading (Esc)"; btn.setAttribute("aria-label", "Stop reading");
+    document.getElementById("readerBar").classList.remove("idle");
     document.getElementById("readerBar").hidden = false;
-    readAt(start, items, reading, 1);
+    if (announce && !paused) sayAnnouncement(announce, reading);
+    else readAt(start, items, reading, 1);
+  }
+  // Between topics the voice says where you are going ("Now we'll practice Basic vocabulary."), then the first phrase follows.
+  function sayAnnouncement(text, run) {
+    run.announcing = true;
+    document.getElementById("readerCount").textContent = innerWidth <= 480 ? "Next" : "Next up";
+    const u = new SpeechSynthesisUtterance(text);
+    useVoice(u, voice()); u.rate = parseFloat(opts.speed);
+    u.onend = u.onerror = () => {
+      if (reading !== run || run.paused || !run.announcing) return;
+      run.announcing = false;
+      run.timer = setTimeout(() => readAt(0, run.items, run, 1), 500);
+    };
+    speechSynthesis.speak(u);
   }
   function readAt(i, items, run, rep, from = 0) {
     if (reading !== run) return;
@@ -946,7 +955,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     const b = document.getElementById("readerPlay");
     b.innerHTML = paused ? PLAY_ICON : PAUSE_ICON;
     b.setAttribute("aria-label", paused ? "Play" : "Pause");
-    b.title = paused ? "Play (space)" : "Pause (space)";
+    b.dataset.tip = paused ? "Play (space)" : "Pause (space)";
     syncCardBtns();
   }
   // Where Play goes on: the word after the last one said. The voice reports each word it starts (most voices);
@@ -967,11 +976,39 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   }
   // Pause stops the voice and keeps the place (the words already said stay lit); Play goes on from the next word.
   // (The browsers' own pause is unreliable, so the voice is cut and the rest of the phrase is said again from there.)
+  function currentTopic() {
+    const st = stack[stack.length - 1];
+    if (!st || st.v !== "topic") return null;
+    const s = S.find(x => x.id === st.s), idx = s ? s.topics.findIndex(x => x.id === st.t) : -1;
+    return idx < 0 ? null : { s, idx, t: s.topics[idx] };
+  }
+  // The player stays on every topic page: before reading, its big button is Read all.
+  function showPlayer() {
+    const bar = document.getElementById("readerBar"), cur = currentTopic();
+    if (!tts || !cur || !cur.t.items.length) { bar.hidden = true; view.style.paddingBottom = ""; return }
+    if (reading) return;
+    bar.hidden = false; bar.classList.add("idle");
+    view.style.paddingBottom = "140px";
+    const n = cur.t.items.length;
+    document.getElementById("readerTrack").innerHTML = cur.t.items.map((_, k) => `<button type="button" data-k="${k}" aria-label="Start at phrase ${k + 1}"><i></i></button>`).join("");
+    document.getElementById("readerCount").textContent = innerWidth <= 480 ? `${n}` : `Read all · ${n} phrases`;
+    setPlayIcon(true);
+    const b = document.getElementById("readerPlay");
+    b.setAttribute("aria-label", "Read all"); b.dataset.tip = "Read all (space)";
+  }
+  // The Topics button moves up while the player is on screen, so they never cover each other.
+  new MutationObserver(() => document.body.classList.toggle("has-player", !document.getElementById("readerBar").hidden))
+    .observe(document.getElementById("readerBar"), { attributes: true, attributeFilter: ["hidden"] });
+  function startFrom(k) {
+    const cur = currentTopic();
+    if (cur) startReading(cur.t.items, null, cur.s.id, cur.idx, k);
+  }
   function readToggle() {
     const run = reading;
     if (!run) return;
     if (!run.paused) {
       run.paused = true; setPlayIcon(true); hideNext();
+      if (run.announcing) { run.announcing = false; speechSynthesis.cancel(); run.resume = { i: 0, rep: 1, from: 0 }; return }
       if (run.timer) { clearTimeout(run.timer); run.timer = null; run.resume = { ...run.after, from: 0 } }  // between phrases
       else { run.resume = resumePoint(run); run.gen++; speechSynthesis.cancel(); cutAt = performance.now(); cancelAnimationFrame(fillRaf) }
       return;
@@ -1021,7 +1058,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
       // not reading yet: start, paused, at the phrase now on screen; Play starts the voice
       const s = S.find(x => x.id === top.s), idx = s.topics.findIndex(x => x.id === top.t);
       const at = Math.max(0, [...view.querySelectorAll(".card")].findIndex(c => c.getBoundingClientRect().bottom > readingAnchor() + 40));
-      startReading(s.topics[idx].items, document.getElementById("playAll"), top.s, idx, at, true);
+      startReading(s.topics[idx].items, null, top.s, idx, at, true);
     }
     stageAuto = auto;
     document.getElementById("stage").hidden = false;
@@ -1271,9 +1308,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
         <div class="thead-row">
           <h1 class="t-title" title="${esc(t.title)}">${esc(t.title)}</h1>
           ${t.tip ? `<button class="yt info-btn" id="infoBtn" type="button" aria-expanded="false" aria-controls="tInfo" aria-label="About this topic" data-tip="About this topic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>` : ""}
-          ${tts && t.items.length ? `<div class="t-acts"><button class="yt yt-play" id="playAll" type="button" aria-label="Read all" data-tip="Read all"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg></button><div class="cap">
-            <button class="yt" id="fullBtn" type="button" aria-label="Full screen" data-tip="Full screen (f)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>
-            ${s.group === "main" ? `<button class="yt done-btn" id="doneBtn" type="button" aria-pressed="${!!practiced[t.id]}" aria-label="Practiced" data-tip="Practiced" data-tip-end>✓</button>` : ""}</div></div>` : ""}
+
         </div>
         ${t.tip ? `<div class="t-info" id="tInfo" hidden><b>${esc(t.title)}</b>${esc(t.tip)}</div>` : ""}
       </div>`;
@@ -1290,14 +1325,10 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
       if (stack.length >= 2) stack[stack.length - 2] = { v: "section", s: ns };
       stack[stack.length - 1] = { v: "topic", s: ns, t: nt }; history.replaceState({ depth: stack.length }, ""); render();
     });
-    const pa = document.getElementById("playAll");
-    if (pa) pa.onclick = () => { if (reading) stopReading(); else startReading(t.items, pa, sid, idx) };
     const ib = document.getElementById("infoBtn");
     if (ib) ib.onclick = () => { const box = document.getElementById("tInfo"), open = box.hidden; box.hidden = !open; ib.setAttribute("aria-expanded", String(open)); setBarH() };
-    const fb = document.getElementById("fullBtn");
-    if (fb) fb.onclick = () => enterStage(false);
     wireSay(t);
-    wireDone(t);
+    showPlayer();
     wireCardTools(t);
     view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
   }
@@ -1549,11 +1580,12 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   document.getElementById("readerPrev").onclick = () => readPrev();
   document.getElementById("readerFull").onclick = () => staged() ? exitStage() : enterStage(false);
   document.getElementById("stageExit").onclick = () => exitStage();
-  document.getElementById("readerPlay").onclick = () => readToggle();
+  document.getElementById("readerPlay").onclick = () => reading ? readToggle() : startFrom(0);
   document.getElementById("readerAgain").onclick = () => reading && readJump(reading.i);
-  document.getElementById("readerTrack").onclick = e => { const b = e.target.closest("[data-k]"); if (b) readJump(+b.dataset.k) };
+  document.getElementById("readerTrack").onclick = e => { const b = e.target.closest("[data-k]"); if (b) reading ? readJump(+b.dataset.k) : startFrom(+b.dataset.k) };
   // Player keys while reading: space = play/pause, ← → = previous/next, Esc = stop (not while typing)
   document.addEventListener("keydown", e => {
+    if (!reading && e.key === " " && currentTopic() && settingsBack.hidden && !(e.target.closest && e.target.closest("input, textarea, select, button, [contenteditable]"))) { e.preventDefault(); startFrom(0); return }
     if (!reading || !document.getElementById("nextPop").hidden) return;
     if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
     if (e.key === " ") { e.preventDefault(); readToggle() }
