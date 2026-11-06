@@ -440,6 +440,32 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .navbtn.fav-go.bump svg { animation: favbump .35s ease }
 @keyframes favbump { 50% { transform: scale(1.35) } }
 @media (prefers-reduced-motion: reduce) { .navbtn.fav-go.bump svg { animation: none } }
+/* Settings panel */
+.optsBtn { width: 40px; color: var(--muted) }
+.settings-back { position: fixed; inset: 0; z-index: 60; background: rgba(5, 10, 14, .62); display: grid; place-items: start center; overflow-y: auto;
+  padding: calc(64px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px)) }
+.settings { width: min(460px, 100%); background: var(--surface); border: 2px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 12px; box-shadow: 0 18px 40px rgba(0,0,0,.45) }
+.settings-head { display: flex; align-items: center; justify-content: space-between; gap: 12px }
+.settings-head h2 { margin: 0; font-size: 22px; font-weight: 900 }
+.settings h3 { margin: 6px 0 -4px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--green); font-weight: 900 }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+.set-wide .drop, .set-wide .drop-head { width: 100% }
+.set-name { display: grid; gap: 2px; font-weight: 800; min-width: 0 }
+.set-switch { flex-wrap: nowrap }
+.set-switch .set-name { flex: 1 }
+.set-name small { font-weight: 600; font-size: 13px; color: var(--muted) }
+.seg { display: inline-flex; border: 2px solid var(--line); border-radius: 12px; overflow: hidden }
+.seg button { border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; padding: 8px 12px; min-height: 40px; min-width: 44px }
+.seg button + button { border-left: 2px solid var(--line) }
+.seg button:hover { background: var(--chip) }
+.seg button[aria-checked="true"] { background: rgba(73, 192, 248, .16); color: var(--blue) }
+.switch { flex: none; width: 52px; height: 30px; border-radius: 999px; border: 2px solid var(--line); background: var(--chip); position: relative; padding: 0 }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--muted); transition: transform .15s }
+.switch[aria-checked="true"] { background: var(--green); border-color: var(--green) }
+.switch[aria-checked="true"]::after { transform: translateX(22px); background: var(--on-green) }
+.set-sum { display: block; margin-top: 8px; border: 0; background: none; padding: 2px 0; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; text-align: left }
+.set-sum:hover { color: var(--blue); text-decoration: underline }
+@media (prefers-reduced-motion: reduce) { .switch::after { transition: none } }
 /* Home: a green square with a house, next to Back */
 .navbtn.home-go { display: inline-grid; place-items: center; width: 40px; padding: 0; background: var(--green); color: var(--on-green); border-color: var(--green); box-shadow: 0 2px 0 var(--green-d) }
 .navbtn.home-go:hover { background: #A5E04A; border-color: #A5E04A }
@@ -452,20 +478,23 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     <button class="navbtn home-go" id="home" type="button" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
     <div class="crumb" id="crumb">Everyday English</div>
     <button class="navbtn fav-go" id="favGo" type="button" aria-label="My phrases" title="My phrases"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="favCount">0</span></button>
-    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-expanded="false" aria-controls="optsWrap" aria-label="Options" title="Options"><span class="chev" aria-hidden="true"></span></button>
+    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-haspopup="dialog" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
   </div>
-  <div class="opts-wrap" id="optsWrap"><div class="opts" inert>
-    <button class="toggle" id="optPractice" type="button" aria-pressed="false" title="Hide the text so that you only listen and repeat">Hide text</button>
-    <select class="speed" id="speed" aria-label="Voice speed">
-      <option value="0.7">Slow voice</option>
-      <option value="0.85" selected>Normal voice</option>
-      <option value="1">Fast voice</option>
-    </select>
-    <select class="speed" id="voicePick" aria-label="Voice" hidden></select>
-  </div></div>
   <div id="barTopic"></div>
 </header>
 <main id="view"></main>
+<div class="settings-back" id="settingsBack" hidden>
+  <div class="settings" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <div class="settings-head"><h2 id="setTitle">Settings</h2><button class="close" id="settingsDone" type="button">Done</button></div>
+    <h3>Voice</h3>
+    <div class="set-row set-wide"><select class="speed" id="voicePick" aria-label="Voice" hidden></select></div>
+    <div class="set-row"><span class="set-name">Speed</span><div class="seg" id="segSpeed" role="radiogroup" aria-label="Speed"></div></div>
+    <h3>Practice</h3>
+    <div class="set-row"><span class="set-name">Repeat each phrase</span><div class="seg" id="segRepeat" role="radiogroup" aria-label="Repeat each phrase"></div></div>
+    <div class="set-row set-switch"><span class="set-name">Repeat after me<small>A silence after each phrase, so you can repeat it</small></span><button class="switch" id="swEcho" type="button" role="switch" aria-checked="false" aria-label="Repeat after me"></button></div>
+    <div class="set-row set-switch"><span class="set-name">Hide text<small>Listen only. Tap a card to see its text.</small></span><button class="switch" id="swHide" type="button" role="switch" aria-checked="false" aria-label="Hide text"></button></div>
+  </div>
+</div>
 <div class="swipe-hint" id="swipeHint" aria-hidden="true">‹</div>
 <div class="pull-hint" id="pullHint" aria-hidden="true">↻</div>
 <div class="next-pop" id="nextPop" role="dialog" aria-live="polite" hidden>
@@ -1184,10 +1213,8 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
         <h1>${esc(t.title)}</h1>
         ${t.tip ? `<p class="tip">${esc(t.tip)}</p>` : ""}
         ${tts && t.items.length ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Read all</button>
-          <select class="speed" id="repeatPick" aria-label="Repeat each phrase">${["1", "2", "3", "5", "inf"].map(v => `<option value="${v}"${opts.repeat === v ? " selected" : ""}>Repeat: ${v === "inf" ? "∞" : v + "×"}</option>`).join("")}</select>
-          <button class="toggle" id="echoBtn" type="button" aria-pressed="${opts.echo}" title="After each phrase, a silence as long as the phrase, so that you can repeat it"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg> Repeat after me</button>
           <button class="toggle full-btn" id="fullBtn" type="button" title="Show the text big, with only the player"><svg viewBox="0 0 24 24" width="15" height="15" style="vertical-align:-2px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg> Full screen</button>
-          ${s.group === "main" ? `<button class="toggle" id="doneBtn" type="button" aria-pressed="${!!practiced[t.id]}">✓ Practiced</button>` : ""}</div>` : ""}
+          ${s.group === "main" ? `<button class="toggle" id="doneBtn" type="button" aria-pressed="${!!practiced[t.id]}">✓ Practiced</button>` : ""}</div><button class="set-sum" id="setSum" type="button" title="Change the settings">${esc(setSummary())}</button>` : ""}
       </div>`;
     const nx = nextTopic(sid, idx), pv = prevTopic(sid, idx);
     view.innerHTML = `
@@ -1204,12 +1231,10 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     });
     const pa = document.getElementById("playAll");
     if (pa) pa.onclick = () => { if (reading) stopReading(); else startReading(t.items, pa, sid, idx) };
-    const rp = document.getElementById("repeatPick"), eb = document.getElementById("echoBtn");
-    if (rp) rp.onchange = () => { opts.repeat = rp.value; store.set("repeat", rp.value); if (reading) reading.total = repeats() };
-    if (eb) eb.onclick = () => { opts.echo = !opts.echo; store.set("echo", opts.echo); eb.setAttribute("aria-pressed", String(opts.echo)) };
+    const ss = document.getElementById("setSum");
+    if (ss) ss.onclick = openSettings;
     const fb = document.getElementById("fullBtn");
     if (fb) fb.onclick = () => enterStage(false);
-    dropify(rp);
     wireSay(t);
     wireDone(t);
     wireCardTools(t);
@@ -1489,11 +1514,6 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     if (i >= 0 && again) window.scrollBy(0, again.getBoundingClientRect().top - offset);
     else window.scrollTo(0, y);
   }
-  function bindToggle(id, key) {
-    const b = document.getElementById(id);
-    b.setAttribute("aria-pressed", String(opts[key]));
-    b.onclick = () => { opts[key] = !opts[key]; store.set(key, opts[key]); b.setAttribute("aria-pressed", String(opts[key])); renderKeepPlace() };
-  }
   // Turn a <select> into the in-page selector above; the <select> stays (hidden) as the source of the value.
   // Open: the box widens to its longest option and the pills beside it move aside, so the gaps stay as they were;
   // its height in the row stays the same, so the list floats over what is below.
@@ -1527,25 +1547,35 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   document.addEventListener("click", e => { if (!e.target.closest(".drop")) closeDrops() });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrops() });
 
-  // Options row: folded by default, the arrow button opens and closes it (remembered)
-  const optsWrap = document.getElementById("optsWrap"), optsBtn = document.getElementById("optsBtn");
-  function showOpts(on) {
-    if (!on) closeDrops();
-    optsWrap.classList.toggle("open", on);
-    if (!on) optsWrap.classList.remove("shown");
-    optsWrap.firstElementChild.inert = !on;
-    optsBtn.setAttribute("aria-expanded", on);
-    store.set("optsOpen", on);
+  // Settings: everything about how the practice sounds, in one panel behind the gear.
+  const SPEEDS = [["0.7", "Slow"], ["0.85", "Normal"], ["1", "Fast"]], REPEATS = ["1", "2", "3", "5", "inf"];
+  const repLabel = v => v === "inf" ? "∞" : v + "×";
+  function setSummary() {
+    return [`${(SPEEDS.find(x => x[0] === opts.speed) || SPEEDS[1])[1]} speed`, `Repeat ${repLabel(opts.repeat)}`,
+      opts.echo ? "Repeat after me" : "", opts.practice ? "Text hidden" : ""].filter(Boolean).join(" · ");
   }
-  optsWrap.addEventListener("transitionend", () => { if (optsWrap.classList.contains("open")) optsWrap.classList.add("shown") });
-  optsBtn.onclick = () => showOpts(!optsWrap.classList.contains("open"));
-  showOpts(store.get("optsOpen", false));
-  if (optsWrap.classList.contains("open")) optsWrap.classList.add("shown");
+  const settingsBack = document.getElementById("settingsBack");
+  function paintSettings() {
+    const seg = (id, list, cur, label) => { document.getElementById(id).innerHTML = list.map(v => { const val = Array.isArray(v) ? v[0] : v; return `<button type="button" role="radio" aria-checked="${val === cur}" data-v="${val}">${esc(label(v))}</button>` }).join("") };
+    seg("segSpeed", SPEEDS, opts.speed, v => v[1]);
+    seg("segRepeat", REPEATS, opts.repeat, repLabel);
+    document.getElementById("swEcho").setAttribute("aria-checked", String(!!opts.echo));
+    document.getElementById("swHide").setAttribute("aria-checked", String(!!opts.practice));
+    const sum = document.getElementById("setSum");
+    if (sum) sum.textContent = setSummary();
+  }
+  function openSettings() { settingsBack.hidden = false; paintSettings(); document.getElementById("settingsDone").focus({ preventScroll: true }) }
+  function closeSettings() { closeDrops(); settingsBack.hidden = true }
+  document.getElementById("optsBtn").onclick = openSettings;
+  document.getElementById("settingsDone").onclick = closeSettings;
+  settingsBack.addEventListener("click", e => { if (e.target === settingsBack) closeSettings() });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !settingsBack.hidden) { e.stopPropagation(); closeSettings() } }, true);
+  document.getElementById("segSpeed").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; opts.speed = b.dataset.v; store.set("speed", opts.speed); paintSettings() };
+  document.getElementById("segRepeat").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; opts.repeat = b.dataset.v; store.set("repeat", opts.repeat); if (reading) reading.total = repeats(); paintSettings() };
+  document.getElementById("swEcho").onclick = () => { opts.echo = !opts.echo; store.set("echo", opts.echo); paintSettings() };
+  document.getElementById("swHide").onclick = () => { opts.practice = !opts.practice; store.set("practice", opts.practice); renderKeepPlace(); paintSettings() };
+  if (!SPEEDS.some(x => x[0] === opts.speed)) opts.speed = "0.85";
 
-  bindToggle("optPractice", "practice");
-  const sp = document.getElementById("speed"); sp.value = opts.speed;
-  sp.onchange = () => { opts.speed = sp.value; store.set("speed", sp.value) };
-  dropify(sp);
   document.getElementById("back").onclick = back;
   document.getElementById("home").onclick = () => { if (stack.length > 1) history.go(1 - stack.length) };
   // Voice picker: every English voice this browser has; the choice is remembered on this device.
