@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Everyday English</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233D8BFF'/%3E%3Cstop offset='1' stop-color='%235E5CE6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ctext x='15' y='42' font-family='Helvetica Neue,Arial,sans-serif' font-weight='800' font-size='38' fill='%23fff'%3EE%3C/text%3E%3Ctext x='27' y='53' font-family='Helvetica Neue,Arial,sans-serif' font-weight='800' font-size='38' fill='%23fff' fill-opacity='.45'%3EE%3C/text%3E%3C/svg%3E">
 <script>
   // The chosen theme is set before anything is drawn, so a reload never flashes the other one first.
   try { var t = JSON.parse(localStorage.getItem("ee_theme")); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t } catch (e) {}
@@ -822,6 +823,25 @@ html .sel-say button:hover { background: var(--hover) }
 html .sel-say .sel-listen { background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: #fff }
 html .sel-say .sel-listen:hover { filter: brightness(1.08); background: linear-gradient(180deg, var(--accent-hi), var(--accent)) }
 html .sel-say .sel-slow svg { color: #30D158 }
+/* ---- The EE logo: a blue tile with an E and its echo; shown on Home, where the back and home buttons are hidden ---- */
+.ee-logo { position: relative; flex: none; width: 32px; height: 32px; border-radius: 9px; overflow: hidden;
+  background: linear-gradient(135deg, #3D8BFF 0%, #5E5CE6 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), inset 0 0 0 .5px rgba(255, 255, 255, .18), 0 3px 10px rgba(60, 90, 230, .35) }
+.ee-logo::after { content: ""; position: absolute; inset: 0 0 50% 0; background: linear-gradient(180deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0)) }
+.ee-logo b { position: absolute; font-family: var(--display); font-weight: 800; font-size: 20px; line-height: 1; color: #fff }
+.ee-logo b:first-child { left: 7px; top: 4px; z-index: 1; text-shadow: 0 1px 2px rgba(20, 30, 90, .3) }
+.ee-logo b + b { left: 13px; top: 10px; color: rgba(255, 255, 255, .45) }
+#navCap:not([hidden]) ~ .ee-logo { display: none }
+
+/* ---- Settings: a lighter gray and a hairline edge, so the panel and its white groups blend softly ---- */
+html .settings { border-width: .5px; box-shadow: 0 24px 60px rgba(0, 0, 0, .3) }
+html .set-group { border-width: .5px }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .settings { background: rgba(246, 246, 249, .94); border-color: rgba(0, 0, 0, .07); box-shadow: 0 24px 60px rgba(30, 40, 80, .16) }
+  :root:not([data-theme="dark"]) .set-group { border-color: rgba(0, 0, 0, .04); box-shadow: none }
+}
+:root[data-theme="light"] .settings { background: rgba(246, 246, 249, .94); border-color: rgba(0, 0, 0, .07); box-shadow: 0 24px 60px rgba(30, 40, 80, .16) }
+:root[data-theme="light"] .set-group { border-color: rgba(0, 0, 0, .04); box-shadow: none }
 </style>
 </head>
 <body>
@@ -831,6 +851,7 @@ html .sel-say .sel-slow svg { color: #30D158 }
     <button class="yt" id="back" type="button" aria-label="Back" data-tip="Back"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
     <button class="yt" id="home" type="button" aria-label="Home" data-tip="Home"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
     </div>
+    <span class="ee-logo" aria-hidden="true"><b>E</b><b>E</b></span>
     <div class="crumb" id="crumb">Everyday English</div>
     <button class="yt info-btn" id="infoBtn" type="button" aria-expanded="false" aria-controls="tInfo" aria-label="About this topic" data-tip="About this topic" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
     <div class="cap">
