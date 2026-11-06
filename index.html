@@ -831,7 +831,8 @@ html .sel-say .sel-slow svg { color: #30D158 }
 .ee-logo b { position: absolute; font-family: var(--display); font-weight: 800; font-size: 20px; line-height: 1; color: #fff }
 .ee-logo b:first-child { left: 7px; top: 4px; z-index: 1; text-shadow: 0 1px 2px rgba(20, 30, 90, .3) }
 .ee-logo b + b { left: 13px; top: 10px; color: rgba(255, 255, 255, .45) }
-#navCap:not([hidden]) ~ .ee-logo { display: none }
+html:not(.at-home) .ee-logo { display: none }
+html.at-home .crumb { display: none }  /* on Home the logo stands alone */
 
 /* ---- Settings: a lighter gray and a hairline edge, so the panel and its white groups blend softly ---- */
 html .settings { border-width: .5px; box-shadow: 0 24px 60px rgba(0, 0, 0, .3) }
@@ -851,7 +852,7 @@ html .set-group { border-width: .5px }
     <button class="yt" id="back" type="button" aria-label="Back" data-tip="Back"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
     <button class="yt" id="home" type="button" aria-label="Home" data-tip="Home"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
     </div>
-    <span class="ee-logo" aria-hidden="true"><b>E</b><b>E</b></span>
+    <span class="ee-logo" role="img" aria-label="Everyday English"><b>E</b><b>E</b></span>
     <div class="crumb" id="crumb">Everyday English</div>
     <button class="yt info-btn" id="infoBtn" type="button" aria-expanded="false" aria-controls="tInfo" aria-label="About this topic" data-tip="About this topic" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
     <div class="cap">
@@ -1582,7 +1583,7 @@ html .set-group { border-width: .5px }
   let practiced = store.get("practiced", {});
   function setPracticed(id, on) { if (on) practiced[id] = 1; else delete practiced[id]; store.set("practiced", practiced) }
   function renderHome() {
-    crumb.textContent = "Everyday English";
+    crumb.textContent = "Everyday English"; document.documentElement.classList.add("at-home");
     const all = mainTopics(), done = all.filter(x => practiced[x.t.id]).length, last = store.get("last", null);
     const lastT = last && all.find(x => x.t.id === last.t);
     const group = ids => ids.map(id => tile(S.find(x => x.id === id))).join("");
@@ -1627,7 +1628,7 @@ html .set-group { border-width: .5px }
 
   function renderSection(sid) {
     const s = S.find(x => x.id === sid);
-    crumb.textContent = s.title;
+    crumb.textContent = s.title; document.documentElement.classList.remove("at-home");
     view.innerHTML = `
       <div class="eyebrow">${esc(s.tag)}</div>
       <h1>${esc(s.title)}</h1>
@@ -1643,7 +1644,7 @@ html .set-group { border-width: .5px }
     const s = S.find(x => x.id === sid);
     const idx = s.topics.findIndex(x => x.id === tid);
     const t = s.topics[idx];
-    crumb.textContent = s.title;  // the bar says the section; the topic is in the row below
+    crumb.textContent = s.title; document.documentElement.classList.remove("at-home");  // the bar says the section; the topic is in the row below
     if (s.group === "main") store.set("last", { t: t.id });
     document.getElementById("barTopic").innerHTML = `
       ${t.tip ? `<div class="topic-head t-info" id="tInfo" hidden><b>${esc(t.title)}</b>${esc(t.tip)}</div>` : ""}`;
