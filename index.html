@@ -789,6 +789,14 @@ html .settings .seg button[aria-checked="true"] { background: #FFFFFF; color: #1
 :root[data-theme="dark"] .settings .seg button[aria-checked="true"] { background: rgba(255, 255, 255, .2); color: var(--ink) }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .settings .seg button[aria-checked="true"] { background: rgba(255, 255, 255, .2); color: var(--ink) } }
 html .settings .switch[aria-checked="true"] { background: var(--accent) !important }
+
+/* the player's track: phrases not heard yet are light bars, heard ones blue (plain colors, so older phone browsers show them too) */
+html .rb-track button::after { background: rgba(255, 255, 255, .28) }
+html .rb-track button.done::after { background: var(--accent) }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .rb-track button::after { background: rgba(60, 60, 67, .2) } :root:not([data-theme="dark"]) .rb-track button.done::after { background: var(--accent) } }
+:root[data-theme="light"] .rb-track button::after { background: rgba(60, 60, 67, .2) }
+:root[data-theme="light"] .rb-track button.done::after { background: var(--accent) }
+html .rb-track button:hover::after { background: rgba(10, 132, 255, .6) }
 </style>
 </head>
 <body>
@@ -1790,15 +1798,17 @@ html .settings .switch[aria-checked="true"] { background: var(--accent) !importa
   const sheet = document.getElementById("sheet"), q = document.getElementById("q"), list = document.getElementById("sheetList");
   const fab = document.getElementById("fab"), closeBtn = document.getElementById("closeSheet");
   const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-  const wide = () => window.innerWidth >= 700;
+  // A phone turned sideways is wide but short: it is not a wide screen, so the menu never docks there.
+  const wide = () => window.innerWidth >= 700 && window.innerHeight >= 520;
   let dock = store.get("dock", true);
   const docked = () => document.body.classList.contains("docked");
   function applyDock() {
     // With the assistant pinned on the left, the topics menu stays docked only on a very wide screen.
     const on = dock && wide() && !(document.body.classList.contains("chatdock") && window.innerWidth < 1180);
+    const was = docked();
     document.body.classList.toggle("docked", on);
     if (on) sheet.hidden = false;
-    else if (wide()) sheet.hidden = true;
+    else if (wide() || was) sheet.hidden = true;  // the docked menu does not stay open as a panel on a smaller screen
     sheet.setAttribute("aria-modal", String(!on));
     fab.hidden = !sheet.hidden;
     closeBtn.textContent = on ? "Minimize ›" : "Close";
