@@ -440,16 +440,19 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .navbtn.fav-go.bump svg { animation: favbump .35s ease }
 @keyframes favbump { 50% { transform: scale(1.35) } }
 @media (prefers-reduced-motion: reduce) { .navbtn.fav-go.bump svg { animation: none } }
+/* Home: a green square with a house, next to Back */
+.navbtn.home-go { display: inline-grid; place-items: center; width: 40px; padding: 0; background: var(--green); color: var(--on-green); border-color: var(--green); box-shadow: 0 2px 0 var(--green-d) }
+.navbtn.home-go:hover { background: #A5E04A; border-color: #A5E04A }
 </style>
 </head>
 <body>
 <header class="bar">
   <div class="bar-row">
     <button class="navbtn" id="back" type="button">‹ Back</button>
+    <button class="navbtn home-go" id="home" type="button" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
     <div class="crumb" id="crumb">Everyday English</div>
-    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-expanded="false" aria-controls="optsWrap" aria-label="Options" title="Options"><span class="chev" aria-hidden="true"></span></button>
     <button class="navbtn fav-go" id="favGo" type="button" aria-label="My phrases" title="My phrases"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="favCount">0</span></button>
-    <button class="navbtn" id="home" type="button">Home</button>
+    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-expanded="false" aria-controls="optsWrap" aria-label="Options" title="Options"><span class="chev" aria-hidden="true"></span></button>
   </div>
   <div class="opts-wrap" id="optsWrap"><div class="opts" inert>
     <button class="toggle" id="optPractice" type="button" aria-pressed="false" title="Hide the text so that you only listen and repeat">Hide text</button>
@@ -742,6 +745,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   const pauseAfter = ms => opts.echo ? Math.max(1200, ms + 400) : 700;
 
   function startReading(items, btn, sid, idx, start = 0, paused = false) {
+    stopMine();
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last phrases can also reach the reading place
     speechSynthesis.cancel(); resetBtn();
     reading = { btn, sid, idx, items, i: 0, timer: null, gen: 0, undo: null, paused, total: repeats() };
@@ -979,6 +983,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   }
   function say(text, rate, btn, onDone) {
     if (!tts) return;
+    stopMine();
     stopReading();
     const same = btn && btn === speakingBtn;
     speechSynthesis.cancel(); resetBtn();
@@ -1002,10 +1007,10 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
         word: j => { if (k) k.mark(j) },
         end: () => {
           if (k) k.undo();
-          if (onDone && started) onDone(performance.now() - started);
           if (n < total) { btn.__t = setTimeout(() => once(n + 1), pauseAfter(started ? performance.now() - started : 1500)); return }
           if (k) markHeard(card, i);
           resetBtn();
+          if (onDone && started) onDone(performance.now() - started);
         }
       });
     };
@@ -1258,6 +1263,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   }
   async function startRecording(it, i, row) {
     stopRecording();
+    stopMine();
     if (tts) { stopReading(); speechSynthesis.cancel(); resetBtn() }
     row.innerHTML = `<span class="rec-live">Please allow the microphone.</span>`;
     try {
@@ -1290,7 +1296,24 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   // Back returns to the page you were on.
   document.getElementById("favGo").onclick = () => { const c = stack[stack.length - 1]; if (!(c.v === "topic" && c.s === "mine")) go({ v: "topic", s: "mine", t: "favs" }) };
   paintFavCount(false);
-  const playMine = it => { const a = new Audio(recs.get(it.en)); a.play().catch(() => {}) };
+  // Your recording: only one sound plays at a time. Me becomes Stop while it plays.
+  let mine = null;
+  function stopMine() {
+    if (!mine) return;
+    mine.audio.pause();
+    if (mine.btn) mine.btn.innerHTML = "▶ Me", mine.btn.classList.remove("stopping");
+    mine = null;
+  }
+  function playMine(it, btn) {
+    if (mine && mine.btn && mine.btn === btn) { stopMine(); return }
+    stopMine();
+    if (tts) { stopReading(); speechSynthesis.cancel(); resetBtn() }
+    const audio = new Audio(recs.get(it.en));
+    mine = { audio, btn };
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("stopping") }
+    audio.onended = () => { if (mine && mine.audio === audio) stopMine() };
+    audio.play().catch(() => stopMine());
+  }
   function wireCardTools(t) {
     view.querySelectorAll("[data-rec]").forEach(b => b.onclick = () => {
       const i = +b.dataset.rec, it = t.items[i];
@@ -1308,7 +1331,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     const m = e.target.closest("[data-mine]"), both = e.target.closest("[data-both]");
     if (!m && !both) return;
     const c = stack[stack.length - 1], topic = S.find(x => x.id === c.s).topics.find(x => x.id === c.t);
-    if (m) playMine(topic.items[+m.dataset.mine]);
+    if (m) playMine(topic.items[+m.dataset.mine], m);
     else { const it = topic.items[+both.dataset.both]; say(it.en, null, both, () => playMine(it)) }
   });
 
@@ -1323,7 +1346,8 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     const st = stack[stack.length - 1];
     stopRecording();
     document.getElementById("back").disabled = stack.length < 2;
-    document.getElementById("back").hidden = stack.length < 2;  // on the home page the title starts at the left edge
+    document.getElementById("back").hidden = stack.length < 2;
+    document.getElementById("home").hidden = stack.length < 2;  // on the home page the title starts at the left edge
     if (st.v === "home") renderHome();
     else if (st.v === "section") renderSection(st.s);
     else renderTopic(st.s, st.t);
