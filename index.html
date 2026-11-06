@@ -436,6 +436,10 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .rec-live { color: var(--muted); font-size: 14px }
 .act.fav { color: var(--muted); padding-inline: 12px }
 .act.fav[aria-pressed="true"] { color: #FFC800 }
+.navbtn.fav-go { display: inline-flex; align-items: center; gap: 5px; color: #FFC800; font-variant-numeric: tabular-nums }
+.navbtn.fav-go.bump svg { animation: favbump .35s ease }
+@keyframes favbump { 50% { transform: scale(1.35) } }
+@media (prefers-reduced-motion: reduce) { .navbtn.fav-go.bump svg { animation: none } }
 </style>
 </head>
 <body>
@@ -444,6 +448,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     <button class="navbtn" id="back" type="button">‹ Back</button>
     <div class="crumb" id="crumb">Everyday English</div>
     <button class="navbtn optsBtn" id="optsBtn" type="button" aria-expanded="false" aria-controls="optsWrap" aria-label="Options" title="Options"><span class="chev" aria-hidden="true"></span></button>
+    <button class="navbtn fav-go" id="favGo" type="button" aria-label="My phrases" title="My phrases"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="favCount">0</span></button>
     <button class="navbtn" id="home" type="button">Home</button>
   </div>
   <div class="opts-wrap" id="optsWrap"><div class="opts" inert>
@@ -1117,6 +1122,8 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
         <div class="progress-row"><b>${done} of ${all.length} topics practiced</b>${lastT ? `<button class="act play" id="contBtn" type="button">Continue · ${esc(lastT.t.title)} ›</button>` : ""}</div>
         <div class="pbar"><i style="width:${(done / all.length * 100).toFixed(1)}%"></i></div>
       </div>
+      <h2 class="eyebrow" style="margin:28px 0 12px">Your phrases</h2>
+      <div class="grid">${group(["mine"])}</div>
       <h2 class="eyebrow" style="margin:28px 0 12px">Learn the basics</h2>
       <div class="grid">${group(["contractions", "vocab"])}</div>
       <h2 class="eyebrow" style="margin:28px 0 12px">Keep it going</h2>
@@ -1124,7 +1131,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
       <h2 class="eyebrow" style="margin:28px 0 12px">Talk about your life</h2>
       <div class="grid">${group(["questions", "everyday", "story"])}</div>
       <h2 class="eyebrow" style="margin:28px 0 12px">Fix it</h2>
-      <div class="grid">${group(["mistakes", "mine"])}</div>
+      <div class="grid">${group(["mistakes"])}</div>
       <h2 class="eyebrow" style="margin:28px 0 12px">How to practice</h2>
       <ol class="how">
         <li><b>Listen.</b> Press Read all and let it play, even while you do something else.</li>
@@ -1132,7 +1139,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
         <li><b>Compare.</b> Press Record on a hard phrase, then listen to yourself and to the voice.</li>
         <li><b>Keep.</b> Press the star on the phrases that you want to practice more.</li>
       </ol>`;
-    view.querySelectorAll("[data-s]").forEach(b => b.onclick = () => { if (b.dataset.s === "mine") jumpTo("mine", "favs"); else go({ v: "section", s: b.dataset.s }) });
+    view.querySelectorAll("[data-s]").forEach(b => b.onclick = () => { if (b.dataset.s === "mine") go({ v: "topic", s: "mine", t: "favs" }); else go({ v: "section", s: b.dataset.s }) });
     const cb = document.getElementById("contBtn");
     if (cb) cb.onclick = () => jumpTo(lastT.s.id, lastT.t.id);
   }
@@ -1227,7 +1234,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
   const allItems = new Map();
   S.forEach(s => s.topics.forEach(t => t.items.forEach(it => { if (!allItems.has(it.en)) allItems.set(it.en, it) })));
   const favTopic = { id: "favs", title: "My phrases", tip: "The phrases you starred. Practice them until they feel easy.", items: Object.keys(favs).map(en => allItems.get(en)).filter(Boolean) };
-  S.push({ id: "mine", group: "mine", unit: "phrases", tag: "Train", title: "My phrases", sub: "The phrases you starred", topics: [favTopic] });
+  S.unshift({ id: "mine", group: "mine", unit: "phrases", tag: "Train", title: "My phrases", sub: "The phrases you starred", topics: [favTopic] });
 
   // Record and compare: your voice stays in this page only, and is gone when you close it.
   const recs = new Map();
@@ -1273,6 +1280,16 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
       row.innerHTML = `<span class="rec-live">The microphone is not available. Please allow it in your browser, and try again.</span>`;
     }
   }
+  // Quick access in the top bar: a star with how many phrases are kept; it opens My phrases from anywhere.
+  function paintFavCount(bump) {
+    const n = Object.keys(favs).length, b = document.getElementById("favGo");
+    document.getElementById("favCount").textContent = n;
+    b.setAttribute("aria-label", `My phrases, ${n}`);
+    if (bump) { b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump") }
+  }
+  // Back returns to the page you were on.
+  document.getElementById("favGo").onclick = () => { const c = stack[stack.length - 1]; if (!(c.v === "topic" && c.s === "mine")) go({ v: "topic", s: "mine", t: "favs" }) };
+  paintFavCount(false);
   const playMine = it => { const a = new Audio(recs.get(it.en)); a.play().catch(() => {}) };
   function wireCardTools(t) {
     view.querySelectorAll("[data-rec]").forEach(b => b.onclick = () => {
@@ -1283,7 +1300,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
     view.querySelectorAll("[data-fav]").forEach(b => b.onclick = () => {
       const it = t.items[+b.dataset.fav], on = !favs[it.en];
       if (on) { favs[it.en] = 1; favTopic.items.push(it) } else { delete favs[it.en]; favTopic.items = favTopic.items.filter(x => x.en !== it.en) }
-      store.set("favs", favs);
+      store.set("favs", favs); paintFavCount(true);
       b.setAttribute("aria-pressed", String(on)); b.innerHTML = STAR(on);
     });
   }
