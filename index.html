@@ -768,6 +768,27 @@ html .spd-btn.spd-fast.pop svg { animation: spdpopfast .35s ease }
 @keyframes spdpopfast { 0% { transform: skewX(-14deg) translateX(-8px) scale(.7) } 60% { transform: skewX(-14deg) translateX(3px) scale(1.12) } 100% { transform: skewX(-14deg) translateX(1px) } }
 @media (max-width: 480px) { html .spd-btn span { display: none } html .spd-btn { padding: 0 !important; min-width: 36px } }
 @media (prefers-reduced-motion: reduce) { html .spd-btn.pop svg { animation: none } }
+
+/* ---- Settings like Apple's: a soft gray panel, white groups; switches turn blue when on ---- */
+html .settings .switch[aria-checked="true"] { background: var(--accent) }
+html .settings .switch:focus:not(:focus-visible) { outline: none; box-shadow: none }
+html .settings .switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+html .settings { background: rgba(32, 33, 38, .82) }
+html .set-group { background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .07); box-shadow: none }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .settings { background: rgba(236, 236, 238, .88) }
+  :root:not([data-theme="dark"]) .set-group { background: #FFFFFF; border-color: rgba(0, 0, 0, .06); box-shadow: 0 1px 2px rgba(0, 0, 0, .04) }
+  :root:not([data-theme="dark"]) .settings .seg, :root:not([data-theme="dark"]) .settings .drop-head { background: rgba(118, 118, 128, .12) }
+  :root:not([data-theme="dark"]) .settings .switch { background: rgba(120, 120, 128, .22) }
+}
+:root[data-theme="light"] .settings { background: rgba(236, 236, 238, .88) }
+:root[data-theme="light"] .set-group { background: #FFFFFF; border-color: rgba(0, 0, 0, .06); box-shadow: 0 1px 2px rgba(0, 0, 0, .04) }
+:root[data-theme="light"] .settings .seg, :root[data-theme="light"] .settings .drop-head { background: rgba(118, 118, 128, .12) }
+:root[data-theme="light"] .settings .switch { background: rgba(120, 120, 128, .22) }
+html .settings .seg button[aria-checked="true"] { background: #FFFFFF; color: #1D1D1F }
+:root[data-theme="dark"] .settings .seg button[aria-checked="true"] { background: rgba(255, 255, 255, .2); color: var(--ink) }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .settings .seg button[aria-checked="true"] { background: rgba(255, 255, 255, .2); color: var(--ink) } }
+html .settings .switch[aria-checked="true"] { background: var(--accent) !important }
 </style>
 </head>
 <body>
