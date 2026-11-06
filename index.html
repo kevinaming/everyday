@@ -160,7 +160,7 @@ body.staged .next-pop { z-index: 47 }
 .topic-head .speed { border-color: var(--line); color: var(--ink); background-color: var(--surface) }
 .topic-head .toggle { border-color: var(--line); color: var(--ink) }
 .topic-head .toggle[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink) }
-.card.reading { border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,90,110,.25) }
+.card.reading { border-color: var(--red); box-shadow: 0 0 0 3px rgba(10, 132, 255, .25) }
 .act.stopping, .sel-say button.stopping { background: var(--red); color: #fff; border-color: var(--red) }
 .hidden-en { filter: blur(7px); user-select: none; cursor: pointer }
 .reveal-hint { font-size: 13px; color: var(--muted) }
@@ -186,8 +186,8 @@ body.staged .next-pop { z-index: 47 }
 .drop-head span:first-child { overflow: hidden; text-overflow: ellipsis }
 .chev { flex: none; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .3s }
 .drop.open .chev { transform: translateY(2px) rotate(225deg) }
-.drop.open .drop-head { background: #1B2740; border-radius: 16px 16px 0 0; border-bottom-color: transparent; box-shadow: 0 -2px 14px rgba(0,0,0,.25) }
-.drop-list { position: absolute; left: 0; top: 100%; width: 100%; display: grid; max-height: 0; overflow: hidden; opacity: 0; background: #1B2740;
+.drop.open .drop-head { background: var(--glass-strong); border-radius: 16px 16px 0 0; border-bottom-color: transparent; box-shadow: 0 -2px 14px rgba(0,0,0,.25) }
+.drop-list { position: absolute; left: 0; top: 100%; width: 100%; display: grid; max-height: 0; overflow: hidden; opacity: 0; background: var(--glass-strong);
   border: 1.5px solid rgba(255,255,255,.35); border-top: 0; border-radius: 0 0 16px 16px; transition: max-height .4s cubic-bezier(.2,.9,.3,1.1), opacity .2s, box-shadow .3s; visibility: hidden }
 .drop.open .drop-list { position: static; max-height: 340px; overflow-y: auto; opacity: 1; visibility: visible; box-shadow: 0 16px 32px rgba(0,0,0,.45) }
 .drop-item { position: relative; text-align: left; white-space: nowrap; padding: 8px 18px 8px 32px; color: rgba(255,255,255,.72); font: inherit; font-size: 14px; background: transparent; border: 0 }
@@ -268,15 +268,15 @@ body.docked { padding-right: 340px }
 body.docked .sheet { inset: 0 0 0 auto; width: 340px; background: transparent; z-index: 12 }
 body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
 .card.flash { animation: flash 1.6s ease-out }
-@keyframes flash { 0%, 40% { border-color: var(--red); box-shadow: 0 0 0 4px rgba(192,18,42,.25) } 100% { border-color: var(--line); box-shadow: none } }
+@keyframes flash { 0%, 40% { border-color: var(--red); box-shadow: 0 0 0 4px rgba(10, 132, 255, .25) } 100% { border-color: var(--line); box-shadow: none } }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none } .tile:hover:not(:disabled) { transform: none } .card.flash { animation: none; border-color: var(--red) } }
 
 /* ===== MAI 630 PE look: dark slate, lime-green 3D buttons, sky-blue secondary, round heavy type ===== */
 :root {
   --bg: #131F24; --surface: #1B2A31; --ink: #F1F7FB; --muted: #8DA2AC;
   --line: #37464F; --chip: #22343C; --es: #BFD0D8;
-  --red: #93D333;                    /* the accent everywhere (it was red): lime green */
-  --green: #93D333; --green-d: #79B933; --on-green: #131F24;
+  --red: var(--accent);                    /* the accent everywhere (it was red): lime green */
+  --green: var(--accent); --green-d: var(--accent); --on-green: #131F24;
   --blue: #49C0F8; --blue-d: #1899D6; --on-blue: #0E1A1F;
   --danger: #FF4B4B; --danger-d: #D93A3A;
   --gold: #FFC800;
@@ -301,7 +301,7 @@ h1, .tile .t, .np-h, .sheet-head h2, .chat-head h2 { font-weight: 900; letter-sp
 .navbtn:hover { background: var(--chip) }
 .crumb { font-weight: 800 }
 .toggle, .topic-head .toggle { background: transparent; color: var(--ink); border-radius: 12px; font-weight: 800 }
-.toggle[aria-pressed="true"], .topic-head .toggle[aria-pressed="true"] { background: rgba(73, 192, 248, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
+.toggle[aria-pressed="true"], .topic-head .toggle[aria-pressed="true"] { background: rgba(10, 132, 255, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
 .drop-head { border-radius: 12px; font-weight: 800; background: transparent }
 .drop.open .drop-head { background: var(--surface); border-color: var(--line); border-radius: 12px 12px 0 0; box-shadow: none }
 .drop-list { background: var(--surface); border: 2px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px }
@@ -310,26 +310,26 @@ h1, .tile .t, .np-h, .sheet-head h2, .chat-head h2 { font-weight: 900; letter-sp
 .drop-item:hover, .drop-item:focus-visible { color: var(--ink) }
 #barTopic { background: rgba(19, 31, 36, .9); border-bottom: 2px solid var(--line) }
 .chip { background: transparent; color: var(--ink); border-radius: 12px; font-weight: 800 }
-.chip[aria-current="true"] { background: rgba(73, 192, 248, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
+.chip[aria-current="true"] { background: rgba(10, 132, 255, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
 
 /* home tiles and phrase cards */
 .tile { border-radius: 18px; background: var(--bg) }
 .tile:hover:not(:disabled) { border-color: var(--line); background: var(--surface); transform: none }
 .tile .s, .tile .n { font-weight: 600 }
-.tag { background: rgba(147, 211, 51, .14); color: var(--green); font-weight: 900 }
+.tag { background: rgba(10, 132, 255, .14); color: var(--green); font-weight: 900 }
 .card { border: 2px solid var(--line); border-radius: 18px; box-shadow: 0 2px 0 var(--line); background: var(--bg) }
 .ask { background: var(--surface); border-radius: 14px }
 .ask .lbl, .ans-lbl { color: var(--muted); font-weight: 900 }
 .en { font-weight: 800 }
 .es { border-left-color: var(--blue) }
-.card.reading { border-color: var(--green); box-shadow: 0 2px 0 var(--green-d), 0 0 0 3px rgba(147, 211, 51, .18) }
-@keyframes flash { 0%, 40% { border-color: var(--green); box-shadow: 0 0 0 4px rgba(147, 211, 51, .25) } 100% { border-color: var(--line); box-shadow: 0 2px 0 var(--line) } }
+.card.reading { border-color: var(--green); box-shadow: 0 2px 0 var(--green-d), 0 0 0 3px rgba(10, 132, 255, .18) }
+@keyframes flash { 0%, 40% { border-color: var(--green); box-shadow: 0 0 0 4px rgba(10, 132, 255, .25) } 100% { border-color: var(--line); box-shadow: 0 2px 0 var(--line) } }
 
 /* buttons: Listen is the green primary, the rest are outlined blue-text secondaries */
 .act { background: transparent; color: var(--blue); border-radius: 14px; text-transform: uppercase; letter-spacing: .05em; font-weight: 900; font-size: 14px }
 .act:hover { border-color: var(--line); background: var(--chip) }
 .act.play { background: var(--green); color: var(--on-green); border-color: var(--green); box-shadow: 0 4px 0 var(--green-d) }
-.act.play:hover { background: #A5E04A; border-color: #A5E04A }
+.act.play:hover { background: var(--accent-hi); border-color: var(--accent-hi) }
 .act.play:active { transform: translateY(4px); box-shadow: none }
 .act.stopping, .sel-say button.stopping { background: var(--danger); color: #fff; border-color: var(--danger); box-shadow: 0 4px 0 var(--danger-d) }
 .act.stopping:hover, .sel-say button.stopping:hover { background: #FF6B6B; border-color: #FF6B6B; color: #fff }  /* hover: a lighter red, never the green */
@@ -353,7 +353,7 @@ h1, .tile .t, .np-h, .sheet-head h2, .chat-head h2 { font-weight: 900; letter-sp
 .rb-track button.done::after { background: var(--green) }
 .rb-track button.now::after { top: 4px; height: 10px; background: var(--line) }
 .rb-track button i { top: 4px; height: 10px; border-radius: 6px; background: var(--green); box-shadow: inset 0 3px 0 rgba(255, 255, 255, .28) }
-.rb-track button:hover::after { background: #4A5C66 }
+.rb-track button:hover::after { background: var(--hover) }
 
 /* full screen */
 .stage { background: var(--bg) }
@@ -366,11 +366,11 @@ h1, .tile .t, .np-h, .sheet-head h2, .chat-head h2 { font-weight: 900; letter-sp
 .fab-chat { background: var(--blue); color: var(--on-blue); border-color: var(--blue); box-shadow: 0 4px 0 var(--blue-d); text-transform: uppercase; letter-spacing: .05em; font-weight: 900; border-radius: 16px }
 .fab-chat:active { transform: translateY(4px); box-shadow: none }
 .fab-chat:hover { background: #7DD3FB; border-color: #7DD3FB }  /* hover: a lighter sky blue */
-.fab:hover { background: #A5E04A; border-color: #A5E04A }
+.fab:hover { background: var(--accent-hi); border-color: var(--accent-hi) }
 .fab:hover, .fab-chat:hover { filter: none }
 .close { background: transparent; color: var(--blue); border-radius: 14px; text-transform: uppercase; font-weight: 900; font-size: 13px }
 .tbtn { background: var(--bg); border-radius: 14px; font-weight: 800 }
-.tbtn[aria-current="true"] { border-color: var(--blue-d); color: var(--blue); background: rgba(73, 192, 248, .1); box-shadow: 0 2px 0 var(--blue-d) }
+.tbtn[aria-current="true"] { border-color: var(--blue-d); color: var(--blue); background: rgba(10, 132, 255, .1); box-shadow: 0 2px 0 var(--blue-d) }
 .qlist { border-left-color: var(--line) }
 .qbtn { font-weight: 700 }
 .qbtn.now { color: var(--green); background: var(--surface) }
@@ -383,11 +383,11 @@ h1, .tile .t, .np-h, .sheet-head h2, .chat-head h2 { font-weight: 900; letter-sp
 .hello .ex { background: transparent; border-radius: 14px; font-weight: 700 }
 .send { background: var(--green); color: var(--on-green); border-color: var(--green); box-shadow: 0 4px 0 var(--green-d); border-radius: 14px; text-transform: uppercase; font-weight: 900 }
 .send.stop { background: var(--muted); border-color: var(--muted); box-shadow: 0 4px 0 var(--line) }
-.send:hover { background: #A5E04A; border-color: #A5E04A }  /* hover: lighter lime, like Listen */
+.send:hover { background: var(--accent-hi); border-color: var(--accent-hi) }  /* hover: lighter lime, like Listen */
 .send.stop:hover { background: #A3B5BD; border-color: #A3B5BD }
 .send:hover { filter: none }
 .send:active { transform: translateY(4px); box-shadow: none }
-.pin[aria-pressed="true"] { background: rgba(73, 192, 248, .14); color: var(--blue); border-color: var(--blue-d) }
+.pin[aria-pressed="true"] { background: rgba(10, 132, 255, .14); color: var(--blue); border-color: var(--blue-d) }
 .sel-say { background: var(--surface); border: 2px solid var(--line) }
 .sel-say button { color: var(--blue); font-weight: 900 }
 .swipe-hint { background: var(--blue); color: var(--on-blue) }
@@ -396,7 +396,7 @@ h1, .tile .t, .np-h, .sheet-head h2, .chat-head h2 { font-weight: 900; letter-sp
 button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 /* hover: the same lighter slate as the topic tiles; a chosen (blue) option just gets a little more blue */
 .toggle:hover, .topic-head .toggle:hover, .drop-head:hover, .tbtn:hover, .hit:hover, .close:hover, .hello .ex:hover, .stage-x:hover { background: var(--surface) }
-.toggle[aria-pressed="true"]:hover, .topic-head .toggle[aria-pressed="true"]:hover, .tbtn[aria-current="true"]:hover { background: rgba(73, 192, 248, .22) }
+.toggle[aria-pressed="true"]:hover, .topic-head .toggle[aria-pressed="true"]:hover, .tbtn[aria-current="true"]:hover { background: rgba(10, 132, 255, .22) }
 @media (prefers-reduced-motion: reduce) { .navbtn, .toggle, .act, .chip, .tbtn, .tile, .fab, .fab-chat { transition: none } }
 
 /* ===== Module 2 page ===== */
@@ -410,7 +410,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .qbtn { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 0; padding-block: 0; margin-block: 7px; border-radius: 4px }
 .ok { color: var(--green); font-weight: 900 }
 .card > .tag { justify-self: start }
-.tag-blue { background: rgba(73, 192, 248, .14); color: var(--blue) }
+.tag-blue { background: rgba(10, 132, 255, .14); color: var(--blue) }
 .progress-card { background: var(--bg); border: 2px solid var(--line); box-shadow: 0 2px 0 var(--line); border-radius: 18px; padding: 16px 18px; display: grid; gap: 10px }
 .progress-card .n { color: var(--muted); font-size: 14px }
 .progress-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap }
@@ -467,7 +467,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .seg button { border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; padding: 8px 12px; min-height: 40px; min-width: 44px }
 .seg button + button { border-left: 2px solid var(--line) }
 .seg button:hover { background: var(--chip) }
-.seg button[aria-checked="true"] { background: rgba(73, 192, 248, .16); color: var(--blue) }
+.seg button[aria-checked="true"] { background: rgba(10, 132, 255, .16); color: var(--blue) }
 .switch { flex: none; width: 52px; height: 30px; border-radius: 999px; border: 2px solid var(--line); background: var(--chip); position: relative; padding: 0 }
 .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--muted); transition: transform .15s }
 .switch[aria-checked="true"] { background: var(--green); border-color: var(--green) }
@@ -482,7 +482,7 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .icon-btn:active { transform: translateY(2px); box-shadow: none }
 .info-btn { width: 32px; height: 32px; border: 0; box-shadow: none; color: var(--muted) }
 .info-btn[aria-expanded="true"] { color: var(--blue) }
-.done-btn[aria-pressed="true"] { background: rgba(73, 192, 248, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
+.done-btn[aria-pressed="true"] { background: rgba(10, 132, 255, .14); color: var(--blue); border-color: var(--blue-d); box-shadow: 0 2px 0 var(--blue-d) }
 .bar-row { flex-wrap: nowrap }
 .bar-row .crumb { flex: 0 1 auto; min-width: 0 }
 .bar-row .crumb + .info-btn + .cap, .bar-row .crumb + .info-btn[hidden] + .cap, .bar-row .crumb + .cap { margin-left: auto }
@@ -507,10 +507,10 @@ button:focus-visible, select:focus-visible { outline-color: var(--blue) }
 .yt.optsBtn { color: var(--ink) }
 .optsBtn.has-dot::before { top: 6px; right: 8px }
 .yt-play { width: 44px; height: 44px; background: var(--green); color: var(--on-green) }
-.yt-play:hover { background: #A5E04A }
+.yt-play:hover { background: var(--accent-hi) }
 .yt-play.stopping { background: var(--danger); color: #fff }
 .yt.info-btn { width: 32px; height: 32px; color: var(--muted) }
-.yt.done-btn[aria-pressed="true"] { background: rgba(73, 192, 248, .18); color: var(--blue); box-shadow: none; border: 0 }
+.yt.done-btn[aria-pressed="true"] { background: rgba(10, 132, 255, .18); color: var(--blue); box-shadow: none; border: 0 }
 .thead-row .cap { background: rgba(255,255,255,.08) }
 /* labels: a small dark box under the button (above it in the player); only with a mouse */
 @media (hover: hover) {
@@ -537,7 +537,7 @@ body.has-player .fab { bottom: calc(118px + env(safe-area-inset-bottom, 0px)) }
 @media (prefers-reduced-motion: reduce) { .switch::after { transition: none } }
 /* Home: a green square with a house, next to Back */
 .navbtn.home-go { display: inline-grid; place-items: center; width: 40px; padding: 0; background: var(--green); color: var(--on-green); border-color: var(--green); box-shadow: 0 2px 0 var(--green-d) }
-.navbtn.home-go:hover { background: #A5E04A; border-color: #A5E04A }
+.navbtn.home-go:hover { background: var(--accent-hi); border-color: var(--accent-hi) }
 
 /* ===================================================================
    GLASS: the macOS look. A soft color field behind translucent, blurred
@@ -726,6 +726,48 @@ html .settings .switch[aria-checked="true"]::after { transform: translateX(17px)
 html .settings .drop, html .settings .drop-head { width: auto }
 html .settings .drop-head { min-height: 30px; padding: 4px 10px; font-size: 13px; font-weight: 500; border-radius: 9px; background: var(--hover); border: 0; box-shadow: none }
 @media (max-width: 420px) { html .set-row { flex-wrap: wrap } html .set-row.set-switch { flex-wrap: nowrap } html .settings .seg button { padding: 0 8px } }
+
+/* ---- Menus (the voice list): a floating glass menu like macOS, small type, blue highlight on the item under the pointer ---- */
+html .drop.open .drop-head { background: var(--hover); border: 0; border-radius: 9px; box-shadow: 0 0 0 3px var(--tint) }
+html .drop-list { margin-top: 6px; padding: 5px; gap: 1px; background: var(--glass-strong); border: 1px solid var(--stroke); border-radius: 12px;
+  box-shadow: var(--spec), 0 18px 44px rgba(0, 0, 0, .28); -webkit-backdrop-filter: blur(30px) saturate(180%); backdrop-filter: blur(30px) saturate(180%) }
+html .drop.open .drop-list { max-height: 300px; box-shadow: var(--spec), 0 18px 44px rgba(0, 0, 0, .28) }
+html .drop-item, html .drop-item:last-child { padding: 6px 14px 6px 28px; font-size: 13px; font-weight: 500; color: var(--ink); border-radius: 7px; text-decoration: none }
+html .drop-item:hover, html .drop-item:focus-visible { background: var(--accent); color: #fff; text-decoration: none }
+html .drop-item.on { color: var(--ink); font-weight: 600 }
+html .drop-item.on::before { left: 10px; color: var(--accent); font-weight: 700 }
+html .drop-item.on:hover::before, html .drop-item.on:focus-visible::before { color: #fff }
+
+/* ---- Buttons, unified ---- */
+/* Stop: red, with a soft neon glow */
+html .act.stopping, html .act.play.stopping, html .yt-play.stopping {
+  background: linear-gradient(180deg, #FF6B62, var(--danger)) !important; color: #fff !important; border-color: transparent !important;
+  box-shadow: 0 0 0 1px rgba(255, 69, 58, .55), 0 0 18px rgba(255, 69, 58, .55), 0 6px 18px rgba(255, 69, 58, .3) !important }
+html .reader-bar #readerStop { color: var(--danger) }
+html .reader-bar #readerStop:hover { background: rgba(255, 69, 58, .14); box-shadow: 0 0 14px rgba(255, 69, 58, .45) }
+html .reader-bar.idle #readerStop { box-shadow: none }
+/* blue buttons: a brighter blue on hover, never a colored border */
+html .act.play:hover, html .next .act.play:hover { border-color: transparent; filter: brightness(1.08); box-shadow: 0 8px 22px rgba(10, 132, 255, .45), inset 0 1px 0 rgba(255,255,255,.35) }
+html .act:hover:not(.play):not(.stopping) { border-color: var(--stroke) }
+/* only the keyboard shows a focus ring */
+html .act:focus:not(:focus-visible), html .yt:focus:not(:focus-visible), html .reader-bar button:focus:not(:focus-visible) { outline: none; box-shadow: none }
+html .act.play:focus:not(:focus-visible) { box-shadow: 0 6px 18px rgba(10, 132, 255, .35), inset 0 1px 0 rgba(255, 255, 255, .35) }
+/* phrase cards grow a touch under the pointer */
+html .card { transition: transform .22s cubic-bezier(.2, .8, .2, 1), box-shadow .22s, border-color .22s }
+@media (hover: hover) { html .card:hover { transform: scale(1.012); box-shadow: var(--spec), 0 18px 44px rgba(0, 0, 0, .26) } }
+@media (prefers-reduced-motion: reduce) { html .card, html .card:hover { transition: none; transform: none } }
+/* speed: one button, the animal tells the speed */
+html .spd-btn { width: auto !important; min-width: 44px; padding: 0 12px !important; gap: 6px; display: inline-flex !important; align-items: center; justify-content: center; color: var(--ink) }
+html .spd-btn span { font-size: 12px; font-weight: 600; color: var(--muted) }
+html .spd-btn.spd-slow svg { color: #30D158 }
+html .spd-btn.spd-normal svg { color: var(--accent) }
+html .spd-btn.spd-fast svg { color: #FF9F0A; transform: skewX(-14deg) translateX(1px); filter: drop-shadow(-3px 0 0 rgba(255, 159, 10, .35)) drop-shadow(-3px 0 0 rgba(255, 159, 10, .18)) }
+html .spd-btn.pop svg { animation: spdpop .35s ease }
+@keyframes spdpop { 0% { transform: scale(.6) } 60% { transform: scale(1.15) } 100% { transform: scale(1) } }
+html .spd-btn.spd-fast.pop svg { animation: spdpopfast .35s ease }
+@keyframes spdpopfast { 0% { transform: skewX(-14deg) translateX(-8px) scale(.7) } 60% { transform: skewX(-14deg) translateX(3px) scale(1.12) } 100% { transform: skewX(-14deg) translateX(1px) } }
+@media (max-width: 480px) { html .spd-btn span { display: none } html .spd-btn { padding: 0 !important; min-width: 36px } }
+@media (prefers-reduced-motion: reduce) { html .spd-btn.pop svg { animation: none } }
 </style>
 </head>
 <body>
@@ -782,7 +824,7 @@ html .settings .drop-head { min-height: 30px; padding: 4px 10px; font-size: 13px
     <button type="button" id="readerPlay" aria-label="Pause" title="Pause (space)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg></button>
     <button type="button" id="readerNext" aria-label="Next phrase" title="Next (→)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/><line x1="19" x2="19" y1="5" y2="19"/></svg></button>
     <span class="rb-count" id="readerCount"></span>
-    <div class="spd" id="spdWrap"><button type="button" id="spdBtn" aria-label="Speed" data-tip="Speed"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></button><input type="range" id="spdRange" min="0" max="2" step="1" aria-label="Speed: slow, normal, fast"><span class="spd-name" id="spdName"></span></div>
+    <button type="button" class="spd-btn" id="spdBtn" aria-label="Speed" data-tip="Speed" data-tip-up></button>
     <button type="button" id="readerAgain" aria-label="Say this phrase again" title="Again"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
     <button type="button" id="readerFull" aria-label="Full screen" title="Full screen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>
     <button type="button" id="readerStop" aria-label="Stop reading" title="Stop (Esc)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="5" y="5" rx="2"/></svg></button>
@@ -1859,6 +1901,10 @@ html .settings .drop-head { min-height: 30px; padding: 4px 10px; font-size: 13px
 
   // Settings: everything about how the practice sounds, in one panel behind the gear.
   const SPEEDS = [["0.7", "Slow"], ["0.85", "Normal"], ["1", "Fast"]], REPEATS = ["1", "2", "3", "5", "inf"];
+  // Lucide icons (ISC license): turtle for slow, rabbit for normal; fast is the rabbit leaning forward with a motion trail.
+  const TURTLE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 10 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a8 8 0 1 0-16 0v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3l2-4h4Z"/><path d="M4.82 7.9 8 10"/><path d="M15.18 7.9 12 10"/><path d="M16.93 10H20a2 2 0 0 1 0 4H2"/></svg>';
+  const RABBIT = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 16a3 3 0 0 1 2.24 5"/><path d="M18 12h.01"/><path d="M18 21h-8a4 4 0 0 1-4-4 7 7 0 0 1 7-7h.2L9.6 6.4a1 1 0 1 1 2.8-2.8L15.8 7h.2c3.3 0 6 2.7 6 6v1a2 2 0 0 1-2 2h-1a3 3 0 0 0-3 3"/><path d="M20 8.54V4a2 2 0 1 0-4 0v3"/><path d="M7.612 12.524a3 3 0 1 0-1.6 4.3"/></svg>';
+  const SPEED_ICONS = [TURTLE, RABBIT, RABBIT];
   // Theme: Auto follows the device; Light or Dark stays on this device.
   const THEMES = [["auto", "Auto"], ["light", "Light"], ["dark", "Dark"]];
   let theme = store.get("theme", "auto");
@@ -1877,9 +1923,10 @@ html .settings .drop-head { min-height: 30px; padding: 4px 10px; font-size: 13px
     seg("segRepeat", REPEATS, opts.repeat, repLabel);
     document.getElementById("swEcho").setAttribute("aria-checked", String(!!opts.echo));
     document.getElementById("swHide").setAttribute("aria-checked", String(!!opts.practice));
-    const k = SPEEDS.findIndex(x => x[0] === opts.speed);
-    document.getElementById("spdRange").value = String(Math.max(0, k));
-    document.getElementById("spdName").textContent = (SPEEDS[k] || SPEEDS[1])[1];
+    const k = Math.max(0, SPEEDS.findIndex(x => x[0] === opts.speed)), sb = document.getElementById("spdBtn");
+    sb.innerHTML = SPEED_ICONS[k] + `<span>${SPEEDS[k][1]}</span>`;
+    sb.className = "spd-btn spd-" + SPEEDS[k][1].toLowerCase();
+    sb.dataset.tip = `Speed: ${SPEEDS[k][1]} · click to change`; sb.setAttribute("aria-label", `Speed: ${SPEEDS[k][1]}. Change speed`);
     const g = document.getElementById("optsBtn");
     document.getElementById("gearRep").textContent = opts.repeat === "1" ? "" : repLabel(opts.repeat);
     g.classList.toggle("has-dot", !!(opts.echo || opts.practice));
@@ -1897,11 +1944,14 @@ html .settings .drop-head { min-height: 30px; padding: 4px 10px; font-size: 13px
   document.getElementById("swEcho").onclick = () => { opts.echo = !opts.echo; store.set("echo", opts.echo); paintSettings() };
   document.getElementById("swHide").onclick = () => { opts.practice = !opts.practice; store.set("practice", opts.practice); renderKeepPlace(); paintSettings() };
   if (!SPEEDS.some(x => x[0] === opts.speed)) opts.speed = "0.85";
-  // Speed in the player: like YouTube's volume, it opens into a slider; the new speed starts with the next phrase.
-  document.getElementById("spdRange").oninput = e => { opts.speed = SPEEDS[+e.target.value][0]; store.set("speed", opts.speed); paintSettings() };
+  // Speed in the player: each click goes slow (turtle) → normal (rabbit) → fast (running rabbit); the new speed starts with the next phrase.
+  document.getElementById("spdBtn").onclick = () => {
+    const k = SPEEDS.findIndex(x => x[0] === opts.speed);
+    opts.speed = SPEEDS[(k + 1) % SPEEDS.length][0]; store.set("speed", opts.speed); paintSettings();
+    const sb = document.getElementById("spdBtn"); sb.classList.remove("pop"); void sb.offsetWidth; sb.classList.add("pop");
+  };
   // The player's labels show above its buttons, with their key.
   document.querySelectorAll("#readerBar button[title]").forEach(b => { b.dataset.tip = b.title; b.removeAttribute("title"); b.setAttribute("data-tip-up", "") });
-  document.getElementById("spdBtn").setAttribute("data-tip-up", "");
   // F: full screen on a topic page, as on YouTube.
   document.addEventListener("keydown", e => {
     if (e.key !== "f" && e.key !== "F") return;
@@ -1923,7 +1973,7 @@ html .settings .drop-head { min-height: 30px; padding: 4px 10px; font-size: 13px
       .sort((a, b) => (isEnUS(b) - isEnUS(a)) || (voiceRank(b) - voiceRank(a)) || a.name.localeCompare(b.name));
     if (!vs.length) { vp.hidden = true; dropify(vp); return }
     const cur = voice();
-    vp.innerHTML = vs.map(v => `<option value="${esc(voiceId(v))}"${cur && voiceId(v) === voiceId(cur) ? " selected" : ""}>${natural(v) ? "★ " : ""}${esc(v.name)} · ${esc(region(v))}</option>`).join("");
+    vp.innerHTML = vs.map(v => `<option value="${esc(voiceId(v))}"${cur && voiceId(v) === voiceId(cur) ? " selected" : ""}>${natural(v) ? "★ " : ""}${esc(v.name.replace(/\s*\(.*\)\s*$/, ""))} · ${esc(region(v))}</option>`).join("");
     vp.hidden = false;
     dropify(vp);
   }
