@@ -843,6 +843,11 @@ html .set-group { border-width: .5px }
 }
 :root[data-theme="light"] .settings { background: rgba(246, 246, 249, .94); border-color: rgba(0, 0, 0, .07); box-shadow: 0 24px 60px rgba(30, 40, 80, .16) }
 :root[data-theme="light"] .set-group { border-color: rgba(0, 0, 0, .04); box-shadow: none }
+/* ---- Tiles and phrase cards: a light lift on hover and press, with a soft, small shadow ---- */
+html .tile:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--spec), 0 4px 12px rgba(0, 0, 0, .12) }
+html .tile:active:not(:disabled) { transform: scale(.99); box-shadow: var(--spec), 0 2px 6px rgba(0, 0, 0, .1) }
+@media (hover: hover) { html .card:hover { transform: scale(1.004); box-shadow: var(--spec), 0 4px 14px rgba(0, 0, 0, .1) } }
+html .card:active { box-shadow: var(--spec), 0 2px 6px rgba(0, 0, 0, .08) }
 </style>
 </head>
 <body>
